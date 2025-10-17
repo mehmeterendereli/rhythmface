@@ -169,11 +169,16 @@ class Renderer(IRenderer):
         # Draw mouth shape overlay (positioned on character's face)
         if mouth_shape in self.mouth_images:
             mouth_img = self.mouth_images[mouth_shape]
-            mouth_rect = mouth_img.get_rect(center=(
+            # Scale mouth to be larger (1.8x)
+            mouth_scaled = pygame.transform.smoothscale(
+                mouth_img,
+                (int(mouth_img.get_width() * 1.8), int(mouth_img.get_height() * 1.8))
+            )
+            mouth_rect = mouth_scaled.get_rect(center=(
                 self.window.get_rect().centerx,
-                self.window.get_rect().centery + 20  # Positioned below nose on face
+                self.window.get_rect().centery + 85  # Positioned at mouth level
             ))
-            self.window.blit(mouth_img, mouth_rect)
+            self.window.blit(mouth_scaled, mouth_rect)
 
         # Update display
         pygame.display.flip()
