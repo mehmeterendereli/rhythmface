@@ -42,17 +42,17 @@ def run_app(config: RhythmFaceConfig) -> int:
     # Initialize lip-sync engine
     engine = LipSyncEngine(config.lipsync)
 
-    print("✓ Audio listener initialized")
-    print("✓ Renderer initialized")
-    print("✓ Lip-sync engine initialized")
+    print("[OK] Audio listener initialized")
+    print("[OK] Renderer initialized")
+    print("[OK] Lip-sync engine initialized")
     print("\nStarting microphone capture...")
 
     # Start audio capture
     try:
         mic_listener.start()
-        print("✓ Microphone active")
+        print("[OK] Microphone active")
     except RuntimeError as e:
-        print(f"✗ Failed to start microphone: {e}")
+        print(f"[FAIL] Failed to start microphone: {e}")
         print("Falling back to demo mode...")
         mic_listener = None  # type: ignore
 
@@ -121,9 +121,9 @@ def run_diagnostics(config: RhythmFaceConfig) -> int:  # noqa: C901
                 print(f"      Channels: {device['channels']}, "
                       f"Sample Rate: {device['sample_rate']} Hz")
         else:
-            print("  ✗ No audio input devices found!")
+            print("  [FAIL] No audio input devices found!")
     except Exception as e:
-        print(f"  ✗ Error listing devices: {e}")
+        print(f"  [FAIL] Error listing devices: {e}")
 
     # 2. Test audio capture with RMS display
     print("\n[2/4] Microphone Test (5 seconds):")
@@ -132,21 +132,21 @@ def run_diagnostics(config: RhythmFaceConfig) -> int:  # noqa: C901
     mic_listener = MicListener(config.audio)
     try:
         mic_listener.start()
-        print("  ✓ Microphone started")
+        print("  [OK] Microphone started")
 
         for _ in range(50):  # 5 seconds at ~10Hz
             time.sleep(0.1)
             features = mic_listener.get_latest_features()
             if features:
                 bar_length = int(features.rms_energy * 50)
-                bar = "█" * bar_length
+                bar = "#" * bar_length
                 status = "SPEECH" if features.is_speech else "silence"
                 print(f"\r  Energy: {bar:<50} [{status}]", end="", flush=True)
 
-        print("\n  ✓ Microphone test complete")
+        print("\n  [OK] Microphone test complete")
         mic_listener.stop()
     except Exception as e:
-        print(f"\n  ✗ Microphone test failed: {e}")
+        print(f"\n  [FAIL] Microphone test failed: {e}")
 
     # 3. Test rendering with FPS counter
     print("\n[3/4] Rendering Test (3 seconds):")
@@ -156,7 +156,7 @@ def run_diagnostics(config: RhythmFaceConfig) -> int:  # noqa: C901
     renderer = Renderer(config.graphics)
     try:
         renderer.initialize()
-        print("  ✓ Renderer initialized")
+        print("  [OK] Renderer initialized")
 
         start_time = time.time()
         frame_count = 0
@@ -173,11 +173,11 @@ def run_diagnostics(config: RhythmFaceConfig) -> int:  # noqa: C901
 
         elapsed = time.time() - start_time
         avg_fps = frame_count / elapsed if elapsed > 0 else 0
-        print(f"  ✓ Rendered {frame_count} frames in {elapsed:.2f}s ({avg_fps:.1f} FPS)")
+        print(f"  [OK] Rendered {frame_count} frames in {elapsed:.2f}s ({avg_fps:.1f} FPS)")
 
         renderer.cleanup()
     except Exception as e:
-        print(f"  ✗ Rendering test failed: {e}")
+        print(f"  [FAIL] Rendering test failed: {e}")
 
     # 4. Test asset loading
     print("\n[4/4] Asset Verification:")
@@ -193,16 +193,16 @@ def run_diagnostics(config: RhythmFaceConfig) -> int:  # noqa: C901
         asset_path = assets_dir / asset
         if asset_path.exists():
             size = asset_path.stat().st_size
-            print(f"  ✓ {asset} ({size:,} bytes)")
+            print(f"  [OK] {asset} ({size:,} bytes)")
         else:
-            print(f"  ✗ {asset} MISSING")
+            print(f"  [FAIL] {asset} MISSING")
             all_present = False
 
     print("\n" + "=" * 60)
     if all_present:
-        print("✓ All diagnostics passed!")
+        print("[OK] All diagnostics passed!")
     else:
-        print("✗ Some diagnostics failed - see above")
+        print("[FAIL] Some diagnostics failed - see above")
     print("=" * 60)
 
     return 0
