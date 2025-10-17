@@ -1,0 +1,27 @@
+# Example configuration for RhythmFace
+# Copy this file to config.yaml and customize as needed
+
+audio:
+  # Audio capture settings
+  sample_rate: 44100      # Sample rate in Hz
+  chunk_size: 1024        # Samples per processing chunk
+  channels: 1             # 1 = mono, 2 = stereo
+  energy_threshold: 0.05  # Minimum RMS energy for speech detection (0.0-1.0)
+  device_id: null         # null = system default, or specific device ID
+
+lipsync:
+  # Lip-sync analysis settings
+  fps: 30                    # Target frames per second
+  formant_detection: true    # Enable formant-based vowel detection (slower but more accurate)
+  mfcc_coefficients: 13      # Number of MFCC coefficients to compute
+  smoothing_window: 3        # Number of frames to average for smoothing
+
+graphics:
+  # Rendering settings
+  window_width: 640          # Window width in pixels
+  window_height: 640         # Window height in pixels
+  window_title: "RhythmFace" # Window title text
+  background_color: [30, 30, 40]  # RGB background color
+  vsync: true                # Enable vertical sync
+  fullscreen: false          # Start in fullscreen mode
+
