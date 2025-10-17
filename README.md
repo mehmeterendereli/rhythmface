@@ -23,44 +23,35 @@
 
 ## 🚀 Quick Start
 
-### Prerequisites
-
-- Python 3.10 or higher
-- Poetry (for dependency management)
-- Microphone (for audio input)
-
 ### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/rhythmface.git
+git clone https://github.com/mehmeterendereli/rhythmface.git
 cd rhythmface
 
-# Install Poetry (if not already installed)
-pip install poetry
-
 # Install dependencies
-poetry install
+pip install sounddevice numpy pygame pillow librosa pyyaml
 
-# Install pre-commit hooks (optional but recommended)
-poetry run pre-commit install
-
-# Generate placeholder assets
-poetry run python -m rhythmface.assets.generator
+# Generate character assets
+python -m rhythmface.assets.generator
 ```
 
 ### Running the Application
 
 ```bash
-# Start the application
-poetry run rhythmface run
+# Start real-time lip-sync (speak into your microphone!)
+python -m rhythmface.cli run
 
-# Or with custom configuration
-poetry run rhythmface run --config config.yaml
-
-# Run diagnostics (test audio devices and rendering)
-poetry run rhythmface diagnose
+# Run diagnostics (test audio and rendering)
+python -m rhythmface.cli diagnose
 ```
+
+**Controls:**
+- `ESC` or `Q`: Quit
+- `F`: Toggle fullscreen
+
+For detailed installation instructions, see [`docs/guides/INSTALLATION.md`](docs/guides/INSTALLATION.md)
 
 ## 🎛️ Configuration
 
@@ -300,12 +291,31 @@ class FileAudioSource(IAudioSource):
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on:
+We welcome contributions! Please see [docs/guides/CONTRIBUTING.md](docs/guides/CONTRIBUTING.md) for details on:
 
 - Code of Conduct
 - Development workflow
 - Pull request process
 - Coding standards
+
+## 📂 Project Structure
+
+```
+rhythmface/
+├── README.md              # Project overview (this file)
+├── rhythmface/            # Main package
+│   ├── audio/            # Microphone capture & MFCC
+│   ├── logic/            # Lip-sync engine
+│   ├── graphics/         # Pygame renderer
+│   ├── assets/           # PNG generator & assets
+│   ├── config.py         # Configuration management
+│   └── cli.py            # CLI commands
+├── tests/                # Test suite (27 tests)
+├── docs/                 # Documentation
+│   ├── guides/           # User guides & tutorials
+│   └── api/              # API reference
+└── example_config.yaml   # Example configuration
+```
 
 ## 📄 License
 
@@ -319,6 +329,24 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Pillow**: Asset generation
 - **Poetry**: Dependency management
 - **Black, Ruff, mypy**: Development tooling
+
+## 📚 Documentation
+
+### Quick Access
+
+| Document | Description |
+|----------|-------------|
+| [QUICKSTART.md](docs/guides/QUICKSTART.md) | Get started in 5 minutes |
+| [INSTALLATION.md](docs/guides/INSTALLATION.md) | Detailed installation guide |
+| [PROJECT_STRUCTURE.md](docs/guides/PROJECT_STRUCTURE.md) | Architecture & file organization |
+| [CONTRIBUTING.md](docs/guides/CONTRIBUTING.md) | Contribution guidelines |
+| [CHANGELOG.md](docs/guides/CHANGELOG.md) | Version history |
+
+### Development Guides
+
+- [SETUP_COMPLETE.md](docs/guides/SETUP_COMPLETE.md) - Setup completion report
+- [DEMO_STATUS.md](docs/guides/DEMO_STATUS.md) - Demo features & status
+- [IMPLEMENTATION_COMPLETE.md](docs/guides/IMPLEMENTATION_COMPLETE.md) - Full implementation details
 
 ## 📞 Support
 
