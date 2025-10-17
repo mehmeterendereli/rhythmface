@@ -1,0 +1,301 @@
+# RhythmFace Project Rules for Cursor AI
+
+## 📂 Project Structure Rules
+
+### Directory Organization
+- **ROOT**: Only essential files (README.md, LICENSE, config files)
+- **NO .md files in root** except README.md
+- All documentation goes to `docs/guides/`
+- All code in `rhythmface/` package
+- All tests in `tests/`
+
+### File Placement Rules
+```
+rhythmface/
+├── README.md              ← Only markdown in root
+├── LICENSE, pyproject.toml, Makefile, etc.
+├── rhythmface/            ← All Python code
+│   ├── audio/            ← Audio capture & processing
+│   ├── logic/            ← Lip-sync engine
+│   ├── graphics/         ← Rendering
+│   ├── assets/           ← PNG generation
+│   ├── config.py         ← Configuration
+│   └── cli.py            ← CLI interface
+├── tests/                ← All tests (27 tests, keep passing!)
+└── docs/
+    ├── guides/           ← ALL user documentation (.md files)
+    └── api/              ← API reference (.rst files)
+```
+
+## 🎯 Code Quality Standards
+
+### Python Code
+1. **Type Hints**: 100% required on all functions
+2. **Docstrings**: Required for all public functions/classes
+3. **Line Length**: 100 characters max (Black default)
+4. **Import Order**: isort (stdlib → third-party → local)
+
+### Linting & Formatting
+- **Ruff**: Must pass with 0 errors
+- **Black**: Auto-format before commit
+- **mypy**: Strict mode, no errors allowed
+- Run before commit: `python -m ruff check rhythmface`
+
+### Testing
+- **Coverage**: Maintain 46%+ (core modules 75-100%)
+- **All tests must pass**: 27/27 tests
+- Run: `python -m pytest tests/ -v`
+- Never break existing tests
+
+## 🏗️ Architecture Principles
+
+### Modular Design
+- **Separation of Concerns**: Audio → Logic → Graphics
+- **Strategy Pattern**: Use for extensibility
+  - `ILipSyncStrategy` for lip-sync algorithms
+  - `IAudioSource` for audio sources
+  - `IRenderer` for renderers
+- Each module independently testable
+
+### Type Safety
+- Full type hints on all functions
+- Use `from __future__ import annotations` if needed
+- Dataclasses for configuration
+- No `Any` types without justification
+
+### Error Handling
+- Graceful degradation (e.g., mic fail → demo mode)
+- Informative error messages
+- Never crash without cleanup
+
+## 📝 Documentation Rules
+
+### Markdown Files
+- **Location**: ALL in `docs/guides/` (except README.md)
+- **Naming**: UPPERCASE.md (e.g., INSTALLATION.md)
+- **Content**: Clear, concise, with code examples
+- **Links**: Use relative paths to other docs
+
+### README.md
+- Must have: Badges, features, quick start, structure
+- Links to docs/guides/ for details
+- Keep concise, delegate to guides for depth
+
+### Code Comments
+- Explain WHY, not WHAT
+- TODO comments must have context
+- Use docstrings for public APIs
+
+## 🔧 Git Commit Standards
+
+### Commit Message Format
+```
+type: Short description
+
+- Detailed point 1
+- Detailed point 2
+
+Features/Changes:
+- List what changed
+```
+
+### Types
+- `feat:` New feature
+- `fix:` Bug fix
+- `refactor:` Code restructuring
+- `docs:` Documentation only
+- `test:` Test additions/changes
+- `chore:` Maintenance tasks
+
+### Before Commit
+1. Run tests: `python -m pytest tests/ -q`
+2. Run linter: `python -m ruff check rhythmface`
+3. Format code: `python -m black rhythmface tests`
+4. Check types: `python -m mypy --strict rhythmface` (optional)
+
+## 🎨 Asset Management
+
+### PNG Files
+- Location: `rhythmface/assets/`
+- Auto-generated with Pillow
+- Never commit manually created PNGs
+- Regenerate: `python -m rhythmface.assets.generator --force`
+
+### Required Assets
+- base.png (512×512) - Character
+- mouth_closed.png (256×128)
+- mouth_A.png (256×128)
+- mouth_O.png (256×128)
+- mouth_E.png (256×128)
+
+## 🔌 Extensibility Guidelines
+
+### Adding New Features
+
+#### New Lip-Sync Strategy
+1. Implement `ILipSyncStrategy` interface
+2. Add to `rhythmface/logic/lipsync_engine.py`
+3. Write tests in `tests/test_logic.py`
+4. Update docs in `docs/guides/`
+
+#### New Audio Source
+1. Implement `IAudioSource` interface
+2. Add to `rhythmface/audio/`
+3. Write tests in `tests/test_audio.py`
+4. Update CLI to support new source
+
+#### New Renderer
+1. Implement `IRenderer` interface
+2. Add to `rhythmface/graphics/`
+3. Write tests in `tests/test_graphics.py`
+
+## ⚙️ Configuration
+
+### Config Files
+- User config: `config.yaml` (gitignored)
+- Example: `example_config.yaml` (in repo)
+- Code: Dataclasses in `rhythmface/config.py`
+
+### Config Structure
+```yaml
+audio:
+  sample_rate: 44100
+  energy_threshold: 0.05
+lipsync:
+  fps: 30
+  formant_detection: true
+graphics:
+  window_width: 640
+  window_height: 640
+```
+
+## 🚀 Development Workflow
+
+### Setup
+```bash
+pip install sounddevice numpy pygame pillow librosa pyyaml
+python -m rhythmface.assets.generator
+python -m pytest tests/ -v
+```
+
+### Running
+```bash
+python -m rhythmface.cli run        # Main app
+python -m rhythmface.cli diagnose   # Diagnostics
+```
+
+### Testing Cycle
+1. Make changes
+2. Run tests: `pytest tests/ -v`
+3. Check linter: `ruff check rhythmface`
+4. Format: `black rhythmface tests`
+5. Commit with proper message
+6. Push to GitHub
+
+## 🎯 Key Metrics to Maintain
+
+- ✅ Tests: 27/27 passing
+- ✅ Linter: 0 errors
+- ✅ Type coverage: 100%
+- ✅ Code coverage: 46%+ (core: 75-100%)
+- ✅ Documentation: Complete and updated
+
+## ⚠️ Never Do This
+
+- ❌ Add .md files to root (except README.md)
+- ❌ Break existing tests
+- ❌ Commit without running tests
+- ❌ Use `# type: ignore` without comment
+- ❌ Add dependencies without updating pyproject.toml
+- ❌ Push to main with linter errors
+- ❌ Remove type hints
+- ❌ Delete tests
+
+## 🎨 Code Style Examples
+
+### Good Function
+```python
+def extract_features(self, audio: npt.NDArray[np.float32]) -> AudioFeatures:
+    """
+    Extract acoustic features from audio chunk.
+
+    Args:
+        audio: Audio samples (mono, float32)
+
+    Returns:
+        AudioFeatures with computed features
+    """
+    rms_energy = float(np.sqrt(np.mean(audio**2)))
+    # ... rest of implementation
+    return AudioFeatures(rms_energy=rms_energy, ...)
+```
+
+### Good Class
+```python
+from abc import ABC, abstractmethod
+
+class ILipSyncStrategy(ABC):
+    """Abstract interface for lip-sync strategies."""
+
+    @abstractmethod
+    def analyze(self, features: AudioFeatures) -> MouthShape:
+        """Analyze features and return mouth shape."""
+        pass
+```
+
+## 📦 Dependencies
+
+### Core Runtime
+- sounddevice (audio I/O)
+- numpy (numerical)
+- pygame (rendering)
+- pillow (images)
+- librosa (audio analysis)
+- pyyaml (config)
+
+### Development
+- pytest, pytest-cov (testing)
+- black, isort, ruff (formatting/linting)
+- mypy (type checking)
+
+## 🔄 Continuous Improvement
+
+### When Adding Features
+1. Check if interface exists (Strategy pattern)
+2. Implement interface, don't modify existing code
+3. Add comprehensive tests
+4. Update documentation in `docs/guides/`
+5. Update README.md if major feature
+
+### When Fixing Bugs
+1. Write failing test first
+2. Fix bug
+3. Ensure test passes
+4. Check no other tests broke
+5. Document in CHANGELOG.md
+
+## 📊 Project Status
+
+- **Status**: Production Ready ✅
+- **Version**: 0.1.0
+- **Python**: 3.10+
+- **License**: MIT
+- **GitHub**: github.com/mehmeterendereli/rhythmface
+
+## 🎯 Remember
+
+This is a **professional, modular, production-ready** project.
+
+Maintain:
+- Clean code
+- Clean structure
+- Clean docs
+- Clean commits
+
+**Quality over quantity. Clarity over cleverness.**
+
+---
+
+**For AI Assistants**: Always follow these rules when working on this project.
+Check this file before making any changes to ensure compliance.
+
