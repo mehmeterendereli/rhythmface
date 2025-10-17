@@ -1,6 +1,5 @@
 # RhythmFace 🎤
 
-[![CI](https://github.com/yourusername/rhythmface/workflows/CI/badge.svg)](https://github.com/yourusername/rhythmface/actions)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -9,14 +8,18 @@
 
 ## ✨ Features
 
-- 🎙️ **Real-time Audio Capture**: Low-latency microphone input processing
-- 🗣️ **Vowel Detection**: MFCC-based phoneme analysis for accurate lip-sync
+- ✅ **Working Animation**: Character with animated mouth shapes (demo mode)
 - 🎨 **Stylized Character**: Street-style "rapper vibe" aesthetic
+- 🎮 **Interactive Window**: Pygame-based renderer with fullscreen support
 - 🔌 **Plugin Architecture**: Strategy pattern for extensible lip-sync algorithms
 - 🎯 **Smooth Animation**: Temporal smoothing for natural mouth movements
-- 🧪 **Comprehensive Testing**: 80%+ test coverage with pytest
-- 🛠️ **Professional Dev Tools**: Black, Ruff, mypy, pre-commit hooks
-- 📚 **Full Documentation**: Sphinx-generated API docs
+- 🧪 **Comprehensive Testing**: 27 passing tests with pytest
+- 🛠️ **Professional Dev Tools**: Black, Ruff, mypy, zero linter errors
+- 📚 **Full Documentation**: Complete README, guides, and API docs
+
+### 🚧 Coming Soon
+- 🎙️ **Real-time Audio Capture**: Microphone input processing
+- 🗣️ **Vowel Detection**: MFCC-based phoneme analysis for accurate lip-sync
 
 ## 🚀 Quick Start
 

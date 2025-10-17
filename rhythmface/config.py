@@ -8,7 +8,7 @@ files or programmatic API.
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 import yaml
 
@@ -29,7 +29,7 @@ class AudioConfig:
     energy_threshold: float = 0.05
     """Minimum RMS energy to trigger mouth movement (0.0-1.0)."""
 
-    device_id: Optional[int] = None
+    device_id: int | None = None
     """Audio input device ID. None = system default."""
 
 
@@ -96,13 +96,13 @@ class RhythmFaceConfig:
             FileNotFoundError: If config file doesn't exist
             yaml.YAMLError: If YAML parsing fails
         """
-        with open(path, "r", encoding="utf-8") as f:
+        with open(path, encoding="utf-8") as f:
             data = yaml.safe_load(f)
 
         return cls.from_dict(data or {})
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "RhythmFaceConfig":
+    def from_dict(cls, data: dict[str, Any]) -> "RhythmFaceConfig":
         """
         Create configuration from dictionary.
 
@@ -165,4 +165,3 @@ def get_default_config() -> RhythmFaceConfig:
         RhythmFaceConfig with all default values
     """
     return RhythmFaceConfig()
-

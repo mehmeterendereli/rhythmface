@@ -7,7 +7,6 @@ and animating mouth movements in real-time.
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Optional
 
 import pygame
 
@@ -83,11 +82,11 @@ class Renderer(IRenderer):
             config: Graphics configuration
         """
         self.config = config
-        self.window: Optional[pygame.Surface] = None
-        self.clock: Optional[pygame.time.Clock] = None
+        self.window: pygame.Surface | None = None
+        self.clock: pygame.time.Clock | None = None
 
         # Asset surfaces
-        self.base_image: Optional[pygame.Surface] = None
+        self.base_image: pygame.Surface | None = None
         self.mouth_images: dict[MouthShape, pygame.Surface] = {}
 
         # Asset paths
@@ -104,26 +103,25 @@ class Renderer(IRenderer):
             RuntimeError: If pygame initialization fails
             FileNotFoundError: If required assets are missing
         """
-        # TODO: Initialize pygame
-        # pygame.init()
+        pygame.init()
 
-        # TODO: Create display window
-        # flags = pygame.FULLSCREEN if self.config.fullscreen else 0
-        # if self.config.vsync:
-        #     flags |= pygame.SCALED
-        # self.window = pygame.display.set_mode(
-        #     (self.config.window_width, self.config.window_height),
-        #     flags
-        # )
+        # Create display window
+        flags = 0
+        if self.config.fullscreen:
+            flags = pygame.FULLSCREEN
+        self.window = pygame.display.set_mode(
+            (self.config.window_width, self.config.window_height),
+            flags
+        )
 
-        # TODO: Set window title
-        # pygame.display.set_caption(self.config.window_title)
+        # Set window title
+        pygame.display.set_caption(self.config.window_title)
 
-        # TODO: Create clock for FPS control
-        # self.clock = pygame.time.Clock()
+        # Create clock for FPS control
+        self.clock = pygame.time.Clock()
 
-        # TODO: Load assets
-        # self._load_assets()
+        # Load assets
+        self._load_assets()
 
         self.initialized = True
 
@@ -134,20 +132,18 @@ class Renderer(IRenderer):
         Raises:
             FileNotFoundError: If asset files are missing
         """
-        # TODO: Load base character image
-        # base_path = self.assets_dir / "base.png"
-        # if not base_path.exists():
-        #     raise FileNotFoundError(f"Base image not found: {base_path}")
-        # self.base_image = pygame.image.load(str(base_path)).convert_alpha()
+        # Load base character image
+        base_path = self.assets_dir / "base.png"
+        if not base_path.exists():
+            raise FileNotFoundError(f"Base image not found: {base_path}")
+        self.base_image = pygame.image.load(str(base_path)).convert_alpha()
 
-        # TODO: Load mouth shape images
-        # for shape in MouthShape:
-        #     mouth_path = self.assets_dir / f"mouth_{shape.value}.png"
-        #     if not mouth_path.exists():
-        #         raise FileNotFoundError(f"Mouth image not found: {mouth_path}")
-        #     self.mouth_images[shape] = pygame.image.load(str(mouth_path)).convert_alpha()
-
-        pass
+        # Load mouth shape images
+        for shape in MouthShape:
+            mouth_path = self.assets_dir / f"mouth_{shape.value}.png"
+            if not mouth_path.exists():
+                raise FileNotFoundError(f"Mouth image not found: {mouth_path}")
+            self.mouth_images[shape] = pygame.image.load(str(mouth_path)).convert_alpha()
 
     def render_frame(self, mouth_shape: MouthShape) -> None:
         """
@@ -162,31 +158,29 @@ class Renderer(IRenderer):
         if not self.initialized or self.window is None:
             return
 
-        # TODO: Clear screen with background color
-        # self.window.fill(self.config.background_color)
+        # Clear screen with background color
+        self.window.fill(self.config.background_color)
 
-        # TODO: Draw base character image (centered)
-        # if self.base_image:
-        #     base_rect = self.base_image.get_rect(center=self.window.get_rect().center)
-        #     self.window.blit(self.base_image, base_rect)
+        # Draw base character image (centered)
+        if self.base_image:
+            base_rect = self.base_image.get_rect(center=self.window.get_rect().center)
+            self.window.blit(self.base_image, base_rect)
 
-        # TODO: Draw mouth shape overlay (positioned on character)
-        # if mouth_shape in self.mouth_images:
-        #     mouth_img = self.mouth_images[mouth_shape]
-        #     mouth_rect = mouth_img.get_rect(center=(
-        #         self.window.get_rect().centerx,
-        #         self.window.get_rect().centery + 50  # Adjust Y offset for mouth position
-        #     ))
-        #     self.window.blit(mouth_img, mouth_rect)
+        # Draw mouth shape overlay (positioned on character)
+        if mouth_shape in self.mouth_images:
+            mouth_img = self.mouth_images[mouth_shape]
+            mouth_rect = mouth_img.get_rect(center=(
+                self.window.get_rect().centerx,
+                self.window.get_rect().centery + 50  # Adjust Y offset for mouth position
+            ))
+            self.window.blit(mouth_img, mouth_rect)
 
-        # TODO: Update display
-        # pygame.display.flip()
+        # Update display
+        pygame.display.flip()
 
-        # TODO: Maintain FPS
-        # if self.clock:
-        #     self.clock.tick(30)  # TODO: Get FPS from config
-
-        pass
+        # Maintain FPS
+        if self.clock:
+            self.clock.tick(30)
 
     def handle_events(self) -> bool:
         """
@@ -198,23 +192,21 @@ class Renderer(IRenderer):
         if not self.initialized:
             return False
 
-        # TODO: Handle pygame events
-        # for event in pygame.event.get():
-        #     if event.type == pygame.QUIT:
-        #         return False
-        #     elif event.type == pygame.KEYDOWN:
-        #         if event.key == pygame.K_ESCAPE or event.key == pygame.K_q:
-        #             return False
-        #         elif event.key == pygame.K_f:
-        #             # Toggle fullscreen
-        #             pygame.display.toggle_fullscreen()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE or event.key == pygame.K_q:
+                    return False
+                elif event.key == pygame.K_f:
+                    # Toggle fullscreen
+                    pygame.display.toggle_fullscreen()
 
         return True
 
     def cleanup(self) -> None:
         """Cleanup pygame resources."""
-        # TODO: Quit pygame
-        # pygame.quit()
+        pygame.quit()
         self.initialized = False
 
     def get_fps(self) -> float:
@@ -225,8 +217,7 @@ class Renderer(IRenderer):
             Current frames per second
         """
         if self.clock:
-            # TODO: return self.clock.get_fps()
-            return 0.0
+            return self.clock.get_fps()
         return 0.0
 
     def set_window_title(self, title: str) -> None:
@@ -237,6 +228,4 @@ class Renderer(IRenderer):
             title: New window title
         """
         if self.initialized:
-            # TODO: pygame.display.set_caption(title)
-            pass
-
+            pygame.display.set_caption(title)

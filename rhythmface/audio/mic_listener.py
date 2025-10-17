@@ -7,7 +7,6 @@ and feature extraction using sounddevice and librosa.
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Optional
 
 import numpy as np
 import numpy.typing as npt
@@ -54,7 +53,7 @@ class IAudioSource(ABC):
         pass
 
     @abstractmethod
-    def get_latest_features(self) -> Optional[AudioFeatures]:
+    def get_latest_features(self) -> AudioFeatures | None:
         """
         Get most recent audio features.
 
@@ -95,11 +94,9 @@ class MicListener(IAudioSource):
         """
         self.config = config
         self._is_active = False
-        self._audio_buffer: Optional[npt.NDArray[np.float32]] = None
-        self._latest_features: Optional[AudioFeatures] = None
-
-        # TODO: Initialize sounddevice stream
-        # TODO: Set up audio processing pipeline
+        self._audio_buffer: npt.NDArray[np.float32] | None = None
+        self._latest_features: AudioFeatures | None = None
+        self._stream: object | None = None
 
     def start(self) -> None:
         """
@@ -108,17 +105,31 @@ class MicListener(IAudioSource):
         Raises:
             RuntimeError: If audio device cannot be opened
         """
-        # TODO: Open sounddevice input stream
-        # TODO: Start background thread for feature extraction
-        self._is_active = True
+        import sounddevice as sd
+
+        try:
+            self._stream = sd.InputStream(
+                samplerate=self.config.sample_rate,
+                channels=self.config.channels,
+                blocksize=self.config.chunk_size,
+                device=self.config.device_id,
+                callback=self._audio_callback,
+                dtype=np.float32,
+            )
+            self._stream.start()  # type: ignore
+            self._is_active = True
+        except Exception as e:
+            raise RuntimeError(f"Failed to open audio device: {e}") from e
 
     def stop(self) -> None:
         """Stop audio capture and cleanup resources."""
-        # TODO: Stop sounddevice stream
-        # TODO: Cleanup background threads
+        if self._stream is not None:
+            self._stream.stop()  # type: ignore
+            self._stream.close()  # type: ignore
+            self._stream = None
         self._is_active = False
 
-    def get_latest_features(self) -> Optional[AudioFeatures]:
+    def get_latest_features(self) -> AudioFeatures | None:
         """
         Get most recent audio features.
 
@@ -152,9 +163,14 @@ class MicListener(IAudioSource):
             time_info: Timing information
             status: Stream status
         """
-        # TODO: Copy audio data to buffer
-        # TODO: Trigger feature extraction
-        pass
+        if status:
+            print(f"Audio stream status: {status}")
+
+        # Copy audio data
+        audio = indata[:, 0].copy() if indata.ndim > 1 else indata.copy()
+
+        # Extract features
+        self._latest_features = self._extract_features(audio)
 
     def _extract_features(self, audio: npt.NDArray[np.float32]) -> AudioFeatures:
         """
@@ -166,19 +182,39 @@ class MicListener(IAudioSource):
         Returns:
             AudioFeatures with computed features
         """
-        # TODO: Compute RMS energy
-        # TODO: Compute MFCC using librosa
-        # TODO: Compute spectral centroid
-        # TODO: Compute zero-crossing rate
-        # TODO: Determine if speech is present (energy threshold)
+        import librosa
 
-        # Placeholder return
+        # Compute RMS energy
+        rms_energy = float(np.sqrt(np.mean(audio**2)))
+
+        # Compute MFCC using librosa
+        mfccs = librosa.feature.mfcc(
+            y=audio,
+            sr=self.config.sample_rate,
+            n_mfcc=13,
+            hop_length=len(audio),  # Single frame
+        )
+        mfcc = mfccs[:, 0].astype(np.float32)
+
+        # Compute spectral centroid
+        centroid = librosa.feature.spectral_centroid(
+            y=audio, sr=self.config.sample_rate, hop_length=len(audio)
+        )
+        spectral_centroid = float(centroid[0, 0]) if centroid.size > 0 else 0.0
+
+        # Compute zero-crossing rate
+        zcr = librosa.feature.zero_crossing_rate(y=audio, hop_length=len(audio))
+        zero_crossing_rate = float(zcr[0, 0]) if zcr.size > 0 else 0.0
+
+        # Determine if speech is present (energy threshold)
+        is_speech = rms_energy > self.config.energy_threshold
+
         return AudioFeatures(
-            rms_energy=0.0,
-            mfcc=np.zeros(13, dtype=np.float32),  # Default 13 MFCC coefficients
-            spectral_centroid=0.0,
-            zero_crossing_rate=0.0,
-            is_speech=False,
+            rms_energy=rms_energy,
+            mfcc=mfcc,
+            spectral_centroid=spectral_centroid,
+            zero_crossing_rate=zero_crossing_rate,
+            is_speech=is_speech,
         )
 
     @staticmethod
@@ -189,6 +225,18 @@ class MicListener(IAudioSource):
         Returns:
             List of device information dictionaries
         """
-        # TODO: Use sounddevice.query_devices() to list inputs
-        return []
+        import sounddevice as sd
 
+        devices = sd.query_devices()
+        input_devices = []
+        for idx, device in enumerate(devices):  # type: ignore
+            if device["max_input_channels"] > 0:  # type: ignore
+                input_devices.append(
+                    {
+                        "index": idx,
+                        "name": device["name"],  # type: ignore
+                        "channels": device["max_input_channels"],  # type: ignore
+                        "sample_rate": device["default_samplerate"],  # type: ignore
+                    }
+                )
+        return input_devices

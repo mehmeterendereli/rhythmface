@@ -6,9 +6,8 @@ and mouth shapes with a 'street rapper vibe' aesthetic.
 """
 
 from pathlib import Path
-from typing import Tuple
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 
 
 def get_assets_dir() -> Path:
@@ -22,7 +21,7 @@ def get_assets_dir() -> Path:
 
 
 def generate_base_character(
-    size: Tuple[int, int] = (512, 512),
+    size: tuple[int, int] = (512, 512),
     output_path: Path | None = None,
 ) -> Image.Image:
     """
@@ -111,7 +110,7 @@ def generate_base_character(
 
 
 def generate_mouth_closed(
-    size: Tuple[int, int] = (256, 128),
+    size: tuple[int, int] = (256, 128),
     output_path: Path | None = None,
 ) -> Image.Image:
     """
@@ -146,7 +145,7 @@ def generate_mouth_closed(
 
 
 def generate_mouth_a(
-    size: Tuple[int, int] = (256, 128),
+    size: tuple[int, int] = (256, 128),
     output_path: Path | None = None,
 ) -> Image.Image:
     """
@@ -195,7 +194,7 @@ def generate_mouth_a(
 
 
 def generate_mouth_o(
-    size: Tuple[int, int] = (256, 128),
+    size: tuple[int, int] = (256, 128),
     output_path: Path | None = None,
 ) -> Image.Image:
     """
@@ -233,7 +232,7 @@ def generate_mouth_o(
 
 
 def generate_mouth_e(
-    size: Tuple[int, int] = (256, 128),
+    size: tuple[int, int] = (256, 128),
     output_path: Path | None = None,
 ) -> Image.Image:
     """
@@ -328,10 +327,7 @@ def ensure_assets_exist() -> bool:
     ]
 
     assets_dir = get_assets_dir()
-    missing = [
-        asset for asset in required_assets
-        if not (assets_dir / asset).exists()
-    ]
+    missing = [asset for asset in required_assets if not (assets_dir / asset).exists()]
 
     if missing:
         print(f"Missing assets: {', '.join(missing)}")
@@ -349,4 +345,3 @@ if __name__ == "__main__":
     force = "--force" in sys.argv
     generate_all_assets(force=force)
     print("Asset generation complete!")
-

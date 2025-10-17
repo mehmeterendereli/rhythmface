@@ -8,10 +8,6 @@ mouth shape selection, and temporal smoothing.
 from abc import ABC, abstractmethod
 from collections import deque
 from enum import Enum
-from typing import Deque, Optional
-
-import numpy as np
-import numpy.typing as npt
 
 from rhythmface.audio.mic_listener import AudioFeatures
 from rhythmface.config import LipSyncConfig
@@ -24,13 +20,13 @@ class MouthShape(Enum):
     These correspond to the PNG assets in rhythmface/assets/:
     - CLOSED: Default closed mouth (rest position)
     - A: Open mouth for 'ah' sound (low vowels)
-    - O: Rounded mouth for 'oh' sound (mid-back vowels)
+    - O: Rounded mouth for 'oh' sound (mid-back vowels)  # noqa: E741
     - E: Wide mouth for 'eh' sound (mid-front vowels)
     """
 
     CLOSED = "closed"
     A = "A"
-    O = "O"
+    O = "O"  # noqa: E741
     E = "E"
 
 
@@ -118,17 +114,37 @@ class MFCCBasedStrategy(ILipSyncStrategy):
         Returns:
             Appropriate MouthShape based on vowel classification
         """
-        # TODO: Implement vowel classification logic
-        # 1. Check if speech is present (energy threshold)
-        # 2. Analyze MFCC coefficients for vowel characteristics
-        # 3. Classify as A (low), O (back), or E (front) vowel
-        # 4. Return appropriate mouth shape
-
+        # Check if speech is present
         if not features.is_speech:
             return MouthShape.CLOSED
 
-        # Placeholder logic
-        return MouthShape.A
+        # Analyze MFCC coefficients for vowel characteristics
+        # MFCC[0]: Energy (already handled by is_speech)
+        # MFCC[1-2]: Formant-related features
+        # MFCC[3-12]: Higher-order spectral features
+
+        mfcc = features.mfcc
+        if len(mfcc) < 3:
+            return MouthShape.CLOSED
+
+        # Simple heuristic based on MFCC coefficients
+        # Lower MFCC[1] typically indicates back vowels (O)
+        # Higher MFCC[1] indicates front vowels (E)
+        # MFCC[2] helps distinguish open vs. close vowels
+
+        mfcc1 = float(mfcc[1])
+        mfcc2 = float(mfcc[2])
+
+        # Vowel classification based on MFCC patterns
+        if mfcc2 > 10:  # High openness -> A (open vowel)
+            return MouthShape.A
+        elif mfcc1 < -5:  # Back vowel -> O
+            return MouthShape.O  # noqa: E741
+        elif mfcc1 > 5:  # Front vowel -> E
+            return MouthShape.E
+        else:
+            # Default to A for mid-range values
+            return MouthShape.A
 
 
 class LipSyncEngine:
@@ -170,9 +186,7 @@ class LipSyncEngine:
             self.strategy = EnergyBasedStrategy(0.05)
 
         # Smoothing buffer for temporal consistency
-        self._shape_history: Deque[MouthShape] = deque(
-            maxlen=config.smoothing_window
-        )
+        self._shape_history: deque[MouthShape] = deque(maxlen=config.smoothing_window)
         self._current_shape: MouthShape = MouthShape.CLOSED
 
     def update(self, features: AudioFeatures) -> None:
@@ -239,4 +253,3 @@ class LipSyncEngine:
         """Reset engine state (clear history, return to closed mouth)."""
         self._shape_history.clear()
         self._current_shape = MouthShape.CLOSED
-

@@ -8,4 +8,3 @@ including compositing the base image with mouth shapes.
 from rhythmface.graphics.renderer import Renderer
 
 __all__ = ["Renderer"]
-

@@ -8,4 +8,3 @@ and determines appropriate mouth shapes for animation.
 from rhythmface.logic.lipsync_engine import LipSyncEngine, MouthShape
 
 __all__ = ["LipSyncEngine", "MouthShape"]
-
