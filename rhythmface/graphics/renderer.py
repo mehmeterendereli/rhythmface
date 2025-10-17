@@ -166,12 +166,12 @@ class Renderer(IRenderer):
             base_rect = self.base_image.get_rect(center=self.window.get_rect().center)
             self.window.blit(self.base_image, base_rect)
 
-        # Draw mouth shape overlay (positioned on character)
+        # Draw mouth shape overlay (positioned on character's face)
         if mouth_shape in self.mouth_images:
             mouth_img = self.mouth_images[mouth_shape]
             mouth_rect = mouth_img.get_rect(center=(
                 self.window.get_rect().centerx,
-                self.window.get_rect().centery + 50  # Adjust Y offset for mouth position
+                self.window.get_rect().centery + 20  # Positioned below nose on face
             ))
             self.window.blit(mouth_img, mouth_rect)
 

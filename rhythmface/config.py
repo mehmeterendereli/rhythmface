@@ -63,8 +63,8 @@ class GraphicsConfig:
     window_title: str = "RhythmFace"
     """Window title text."""
 
-    background_color: tuple[int, int, int] = (30, 30, 40)
-    """Background color as RGB tuple."""
+    background_color: tuple[int, int, int] = (25, 25, 35)
+    """Background color as RGB tuple (dark modern theme)."""
 
     vsync: bool = True
     """Enable vertical sync."""
