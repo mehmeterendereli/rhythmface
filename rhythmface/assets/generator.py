@@ -1,8 +1,8 @@
 """
 Automatic asset generation using Pillow.
 
-This module generates placeholder PNG assets for the character base
-and mouth shapes with a 'street rapper vibe' aesthetic.
+This module generates high-quality flat-design PNG assets for the character base
+and mouth shapes with a professional 'street rapper vibe' aesthetic.
 """
 
 from pathlib import Path
@@ -25,12 +25,12 @@ def generate_base_character(
     output_path: Path | None = None,
 ) -> Image.Image:
     """
-    Generate premium quality rapper character avatar.
+    Generate high-quality flat-design rapper character.
 
     Professional vector-style design with:
-    - Smooth gradients and shading
-    - Designer accessories
-    - Perfect proportions
+    - Flat colors (minimal gradients)
+    - Clean geometric shapes
+    - Sharp edges and smooth curves
     - Modern minimalist aesthetic
 
     Args:
@@ -40,136 +40,222 @@ def generate_base_character(
     Returns:
         PIL Image of base character (transparent background)
     """
-    img = Image.new("RGBA", size, (0, 0, 0, 0))
+    # High-res for quality, then scale down with antialiasing
+    scale = 2
+    hires_size = (size[0] * scale, size[1] * scale)
+    img = Image.new("RGBA", hires_size, (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
-    w, h = size
+    w, h = hires_size
     cx, cy = w // 2, h // 2
 
-    # === TORSO & CLOTHING ===
-    # Black hoodie/jacket
-    torso_y = cy + 150
-    draw.polygon(
-        [(cx - 150, h), (cx - 100, torso_y), (cx + 100, torso_y), (cx + 150, h)],
-        fill=(28, 28, 32, 255),
-    )
+    # Color palette - flat design
+    skin_tone = (220, 160, 115)
+    skin_shadow = (195, 140, 100)
+    hair_color = (60, 40, 30)
+    hair_highlight = (80, 55, 42)
+    black_shirt = (28, 28, 32)
+    shirt_shadow = (18, 18, 22)
+    gold_chain = (235, 180, 50)
+    gold_dark = (200, 150, 40)
+    gold_light = (255, 210, 90)
+    glass_frame = (15, 15, 18)
+    glass_lens = (25, 25, 30)
 
-    # Hoodie shadow detail
-    draw.polygon(
-        [(cx - 95, torso_y + 10), (cx - 70, torso_y), (cx + 70, torso_y), (cx + 95, torso_y + 10)],
-        fill=(18, 18, 22, 255),
-    )
+    # === TORSO & HOODIE ===
+    torso_y = cy + 300
+    # Main body shape
+    body_points = [
+        (cx - 300, h),
+        (cx - 200, torso_y),
+        (cx - 180, torso_y - 50),
+        (cx + 180, torso_y - 50),
+        (cx + 200, torso_y),
+        (cx + 300, h),
+    ]
+    draw.polygon(body_points, fill=black_shirt)
 
-    # === PREMIUM GOLD CHAIN ===
-    chain_y = torso_y + 35
-    chain_width = 110
-
-    # Chain links with depth
-    for i in range(8):
-        t = i / 7
-        x = cx + (t - 0.5) * chain_width
-        y = chain_y + (1 - abs(2 * t - 1)) * 12
-
-        # Shadow
-        draw.ellipse([x - 14, y - 13 + 2, x + 14, y + 13 + 2], fill=(180, 140, 0, 100))
-
-        # Gold link
-        draw.ellipse([x - 14, y - 13, x + 14, y + 13], fill=(255, 220, 60, 255), outline=(220, 180, 30, 255), width=2)
-
-        # Highlight
-        draw.ellipse([x - 8, y - 8, x + 3, y + 3], fill=(255, 245, 200, 180))
+    # Hoodie shadow/collar
+    collar_points = [
+        (cx - 160, torso_y - 30),
+        (cx - 120, torso_y - 80),
+        (cx + 120, torso_y - 80),
+        (cx + 160, torso_y - 30),
+    ]
+    draw.polygon(collar_points, fill=shirt_shadow)
 
     # === NECK ===
-    neck_y = torso_y - 10
-    # Neck shadow
-    draw.ellipse([cx - 43, neck_y - 42, cx + 43, neck_y + 18], fill=(130, 90, 65, 255))
-    # Neck main
-    draw.ellipse([cx - 40, neck_y - 45, cx + 40, neck_y + 15], fill=(210, 150, 110, 255))
-
-    # === HEAD (REALISTIC PROPORTIONS) ===
-    head_y = cy - 90
-    head_w = 95
-    head_h = 120
-
-    # Drop shadow
-    draw.ellipse([cx - head_w + 5, head_y + 5, cx + head_w + 5, head_y + head_h + 5], fill=(0, 0, 0, 40))
-
-    # Face gradient (darker on edges)
-    draw.ellipse([cx - head_w, head_y, cx + head_w, head_y + head_h], fill=(210, 150, 110, 255))
-
-    # Face contour
-    draw.ellipse([cx - head_w, head_y, cx + head_w, head_y + head_h], outline=(180, 130, 90, 255), width=3)
-
-    # Cheek highlights
-    draw.ellipse([cx - 55, head_y + 55, cx - 30, head_y + 75], fill=(230, 170, 130, 80))
-    draw.ellipse([cx + 30, head_y + 55, cx + 55, head_y + 75], fill=(230, 170, 130, 80))
-
-    # === EARS (DETAILED) ===
-    ear_y = head_y + 52
-    ear_w = 22
-    ear_h = 38
-
-    # Left ear
-    draw.ellipse([cx - head_w - 8, ear_y, cx - head_w + ear_w - 8, ear_y + ear_h], fill=(200, 140, 100, 255), outline=(170, 120, 85, 255), width=2)
-    draw.ellipse([cx - head_w - 3, ear_y + 12, cx - head_w + 10, ear_y + 26], fill=(180, 125, 90, 150))
-
-    # Right ear
-    draw.ellipse([cx + head_w - ear_w + 8, ear_y, cx + head_w + 8, ear_y + ear_h], fill=(200, 140, 100, 255), outline=(170, 120, 85, 255), width=2)
-    draw.ellipse([cx + head_w - 10, ear_y + 12, cx + head_w + 3, ear_y + 26], fill=(180, 125, 90, 150))
-
-    # === PREMIUM SNAPBACK CAP ===
-    cap_y = head_y - 35
-
-    # Cap shadow
-    draw.ellipse([cx - 108, cap_y, cx + 108, cap_y + 58], fill=(12, 12, 15, 255))
-
-    # Cap main body
-    draw.ellipse([cx - 105, cap_y, cx + 105, cap_y + 55], fill=(22, 22, 26, 255), outline=(40, 40, 44, 255), width=3)
-
-    # Brim (curved realistic)
-    brim_points = [
-        (cx - 120, cap_y + 42),
-        (cx - 100, cap_y + 52),
-        (cx + 70, cap_y + 52),
-        (cx + 85, cap_y + 42),
-        (cx + 70, cap_y + 45),
-        (cx - 100, cap_y + 45),
+    neck_y = torso_y - 70
+    neck_points = [
+        (cx - 80, neck_y - 10),
+        (cx - 70, neck_y - 80),
+        (cx + 70, neck_y - 80),
+        (cx + 80, neck_y - 10),
     ]
-    draw.polygon(brim_points, fill=(18, 18, 22, 255), outline=(35, 35, 39, 255), width=2)
+    draw.polygon(neck_points, fill=skin_shadow)
+    
+    # Neck front
+    neck_front_points = [
+        (cx - 70, neck_y - 10),
+        (cx - 60, neck_y - 80),
+        (cx + 60, neck_y - 80),
+        (cx + 70, neck_y - 10),
+    ]
+    draw.polygon(neck_front_points, fill=skin_tone)
 
-    # Premium logo badge
-    logo_x, logo_y = cx - 5, cap_y + 20
-    draw.ellipse([logo_x - 26, logo_y, logo_x + 26, logo_y + 42], fill=(245, 245, 248, 255), outline=(200, 200, 203, 255), width=2)
+    # === GOLD CHAIN ===
+    chain_y = neck_y + 50
+    chain_radius = 30
+    chain_positions = []
+    
+    # Create circular chain
+    import math
+    for i in range(12):
+        angle = (i / 12) * math.pi - math.pi / 2
+        x = cx + math.sin(angle) * 140
+        y = chain_y + math.cos(angle) * 60 - 30
+        chain_positions.append((x, y))
+    
+    # Draw chain links
+    for x, y in chain_positions:
+        # Shadow
+        draw.ellipse([x - chain_radius + 4, y - chain_radius + 4, 
+                     x + chain_radius + 4, y + chain_radius + 4], 
+                     fill=gold_dark)
+        # Main gold
+        draw.ellipse([x - chain_radius, y - chain_radius, 
+                     x + chain_radius, y + chain_radius], 
+                     fill=gold_chain)
+        # Highlight
+        draw.ellipse([x - chain_radius // 2, y - chain_radius // 2, 
+                     x + chain_radius // 3, y + chain_radius // 3], 
+                     fill=gold_light)
 
-    # Logo shadow
-    draw.ellipse([logo_x - 15, logo_y + 28, logo_x + 15, logo_y + 35], fill=(180, 180, 185, 100))
+    # === HEAD ===
+    head_y = cy - 180
+    head_w = 190
+    head_h = 240
 
-    # === DESIGNER SUNGLASSES ===
-    glass_y = head_y + 42
-    lens_h = 34
+    # Head shape (oval)
+    draw.ellipse([cx - head_w, head_y, cx + head_w, head_y + head_h], 
+                 fill=skin_tone)
+    
+    # Face shadow (side)
+    draw.ellipse([cx - head_w, head_y, cx - head_w + 40, head_y + head_h], 
+                 fill=skin_shadow)
 
-    # Frame shadow
-    draw.rounded_rectangle([cx - 82, glass_y + 2, cx + 82, glass_y + lens_h + 2], radius=10, fill=(0, 0, 0, 40))
+    # === EARS ===
+    ear_y = head_y + 100
+    ear_w = 35
+    ear_h = 60
+    
+    # Left ear
+    draw.ellipse([cx - head_w - 15, ear_y, cx - head_w + ear_w, ear_y + ear_h], 
+                 fill=skin_tone)
+    # Inner ear detail
+    draw.ellipse([cx - head_w - 5, ear_y + 15, cx - head_w + 15, ear_y + 45], 
+                 fill=skin_shadow)
+    
+    # Right ear
+    draw.ellipse([cx + head_w - ear_w, ear_y, cx + head_w + 15, ear_y + ear_h], 
+                 fill=skin_tone)
+    # Inner ear detail
+    draw.ellipse([cx + head_w - 15, ear_y + 15, cx + head_w + 5, ear_y + 45], 
+                 fill=skin_shadow)
 
-    # Frame main
-    draw.rounded_rectangle([cx - 80, glass_y, cx + 80, glass_y + lens_h], radius=10, fill=(22, 22, 26, 255), outline=(40, 40, 44, 255), width=3)
+    # === HAIR (SPIKY/WAVY STYLE) ===
+    hair_y = head_y - 30
+    
+    # Hair base
+    hair_points = [
+        (cx - head_w - 20, hair_y + 100),
+        (cx - head_w - 10, hair_y + 50),
+        (cx - 140, hair_y + 20),
+        (cx - 100, hair_y),
+        (cx - 60, hair_y + 10),
+        (cx - 20, hair_y + 5),
+        (cx + 20, hair_y + 15),
+        (cx + 60, hair_y + 20),
+        (cx + 100, hair_y + 10),
+        (cx + 140, hair_y + 30),
+        (cx + head_w - 10, hair_y + 60),
+        (cx + head_w, hair_y + 100),
+        (cx, hair_y + 80),
+    ]
+    draw.polygon(hair_points, fill=hair_color)
+    
+    # Hair highlights (spiky effect)
+    highlight_points = [
+        (cx - 100, hair_y + 5),
+        (cx - 80, hair_y - 5),
+        (cx - 60, hair_y + 15),
+    ]
+    draw.polygon(highlight_points, fill=hair_highlight)
+    
+    highlight_points2 = [
+        (cx - 20, hair_y + 10),
+        (cx, hair_y),
+        (cx + 20, hair_y + 20),
+    ]
+    draw.polygon(highlight_points2, fill=hair_highlight)
 
+    # === NOSE ===
+    nose_y = head_y + 140
+    nose_points = [
+        (cx - 15, nose_y),
+        (cx, nose_y + 25),
+        (cx + 15, nose_y),
+    ]
+    draw.polygon(nose_points, fill=skin_shadow)
+
+    # === SUNGLASSES (FLAT DESIGN) ===
+    glass_y = head_y + 80
+    glass_w = 150
+    glass_h = 55
+    
+    # Frame outline (thick)
+    frame_thickness = 12
+    draw.rounded_rectangle(
+        [cx - glass_w - frame_thickness, glass_y - frame_thickness, 
+         cx + glass_w + frame_thickness, glass_y + glass_h + frame_thickness],
+        radius=15, fill=glass_frame
+    )
+    
     # Left lens
-    draw.rounded_rectangle([cx - 75, glass_y + 2, cx - 5, glass_y + lens_h - 2], radius=8, fill=(0, 0, 0, 255))
-
+    draw.rounded_rectangle(
+        [cx - glass_w, glass_y, cx - 10, glass_y + glass_h],
+        radius=8, fill=glass_lens
+    )
+    
     # Right lens
-    draw.rounded_rectangle([cx + 5, glass_y + 2, cx + 75, glass_y + lens_h - 2], radius=8, fill=(0, 0, 0, 255))
-
+    draw.rounded_rectangle(
+        [cx + 10, glass_y, cx + glass_w, glass_y + glass_h],
+        radius=8, fill=glass_lens
+    )
+    
     # Bridge
-    draw.rectangle([cx - 5, glass_y + 10, cx + 5, glass_y + 20], fill=(22, 22, 26, 255))
+    draw.rectangle([cx - 10, glass_y + 15, cx + 10, glass_y + 35], fill=glass_frame)
+    
+    # Lens reflection (minimal)
+    draw.rounded_rectangle(
+        [cx - glass_w + 10, glass_y + 8, cx - 40, glass_y + 25],
+        radius=5, fill=(255, 255, 255, 30)
+    )
+    draw.rounded_rectangle(
+        [cx + 40, glass_y + 8, cx + glass_w - 10, glass_y + 25],
+        radius=5, fill=(255, 255, 255, 30)
+    )
+    
+    # Temples (side arms)
+    draw.line([(cx - glass_w - frame_thickness, glass_y + glass_h // 2), 
+               (cx - glass_w - 60, glass_y + glass_h // 2 + 10)], 
+              fill=glass_frame, width=frame_thickness)
+    draw.line([(cx + glass_w + frame_thickness, glass_y + glass_h // 2), 
+               (cx + glass_w + 60, glass_y + glass_h // 2 + 10)], 
+              fill=glass_frame, width=frame_thickness)
 
-    # Lens highlights (glossy reflection)
-    draw.arc([cx - 70, glass_y + 5, cx - 50, glass_y + 25], start=30, end=120, fill=(255, 255, 255, 60), width=4)
-    draw.arc([cx + 50, glass_y + 5, cx + 70, glass_y + 25], start=30, end=120, fill=(255, 255, 255, 60), width=4)
-
-    # Additional frame details (side arms hint)
-    draw.line([(cx - 80, glass_y + lens_h // 2), (cx - 100, glass_y + lens_h // 2 + 5)], fill=(22, 22, 26, 255), width=4)
-    draw.line([(cx + 80, glass_y + lens_h // 2), (cx + 100, glass_y + lens_h // 2 + 5)], fill=(22, 22, 26, 255), width=4)
+    # Scale down to target size with high-quality antialiasing
+    img = img.resize(size, Image.Resampling.LANCZOS)
 
     if output_path:
         img.save(output_path)
@@ -182,7 +268,7 @@ def generate_mouth_closed(
     output_path: Path | None = None,
 ) -> Image.Image:
     """
-    Generate closed mouth shape.
+    Generate closed mouth (flat design style).
 
     Args:
         size: Image dimensions
@@ -191,26 +277,25 @@ def generate_mouth_closed(
     Returns:
         PIL Image of closed mouth
     """
-    img = Image.new("RGBA", size, (0, 0, 0, 0))
+    scale = 2
+    img = Image.new("RGBA", (size[0] * scale, size[1] * scale), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
-    cx, cy = size[0] // 2, size[1] // 2
+    cx, cy = (size[0] * scale) // 2, (size[1] * scale) // 2
 
-    # Closed lips with slight curve
-    draw.arc([cx - 35, cy - 10, cx + 35, cy + 10], start=0, end=180, fill=(140, 65, 55, 255), width=8)
+    # Flat design colors
+    lip_color = (160, 80, 70)
+    lip_dark = (130, 60, 50)
 
-    # Upper lip shading
-    draw.arc([cx - 32, cy - 8, cx + 32, cy + 2], start=0, end=180, fill=(160, 75, 65, 255), width=4)
+    # Simple horizontal line mouth
+    draw.arc([cx - 70, cy - 20, cx + 70, cy + 20], start=0, end=180, 
+             fill=lip_dark, width=16)
+    draw.arc([cx - 65, cy - 18, cx + 65, cy + 18], start=0, end=180, 
+             fill=lip_color, width=12)
 
-    # Lower lip shading
-    draw.arc([cx - 32, cy - 2, cx + 32, cy + 8], start=0, end=180, fill=(155, 72, 62, 230), width=4)
-
-    # Highlight for glossy effect
-    draw.arc([cx - 25, cy - 12, cx + 25, cy - 2], start=0, end=180, fill=(190, 100, 85, 140), width=3)
-
+    img = img.resize(size, Image.Resampling.LANCZOS)
     if output_path:
         img.save(output_path)
-
     return img
 
 
@@ -219,7 +304,7 @@ def generate_mouth_a(
     output_path: Path | None = None,
 ) -> Image.Image:
     """
-    Generate 'A' mouth - open for "ah" sound.
+    Generate 'A' mouth - open oval (flat design).
 
     Args:
         size: Image dimensions
@@ -228,42 +313,36 @@ def generate_mouth_a(
     Returns:
         PIL Image of A mouth
     """
-    img = Image.new("RGBA", size, (0, 0, 0, 0))
+    scale = 2
+    img = Image.new("RGBA", (size[0] * scale, size[1] * scale), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
-    cx, cy = size[0] // 2, size[1] // 2
-    mw, mh = 40, 30  # Slightly taller for 'A' sound
+    cx, cy = (size[0] * scale) // 2, (size[1] * scale) // 2
 
-    # Mouth cavity shadow
-    draw.ellipse([cx - mw + 2, cy - mh + 2, cx + mw + 2, cy + mh + 2], fill=(25, 10, 10, 150))
+    # Colors
+    mouth_inside = (40, 20, 20)
+    lip_color = (160, 80, 70)
+    lip_dark = (130, 60, 50)
+    teeth = (255, 255, 245)
+
+    mw, mh = 75, 55
 
     # Mouth cavity
-    draw.ellipse([cx - mw, cy - mh, cx + mw, cy + mh], fill=(35, 15, 15, 255))
+    draw.ellipse([cx - mw, cy - mh, cx + mw, cy + mh], fill=mouth_inside)
 
-    # Tongue
-    draw.ellipse([cx - 30, cy + 5, cx + 30, cy + 25], fill=(180, 80, 80, 255), outline=(160, 70, 70, 255), width=2)
+    # Teeth (upper)
+    draw.arc([cx - 65, cy - 45, cx + 65, cy - 5], start=180, end=360, 
+             fill=teeth, width=25)
 
-    # Upper teeth
-    draw.rounded_rectangle([cx - 35, cy - 25, cx + 35, cy - 5], radius=4, fill=(248, 248, 238, 255), outline=(230, 230, 220, 255), width=2)
+    # Lips outline
+    draw.ellipse([cx - mw - 6, cy - mh - 6, cx + mw + 6, cy + mh + 6], 
+                 outline=lip_dark, width=14)
+    draw.ellipse([cx - mw - 2, cy - mh - 2, cx + mw + 2, cy + mh + 2], 
+                 outline=lip_color, width=8)
 
-    # Lower teeth hint
-    draw.ellipse([cx - 30, cy + 10, cx + 30, cy + 22], fill=(243, 243, 233, 255), outline=(225, 225, 215, 255), width=1)
-
-    # Outer lips
-    draw.ellipse([cx - mw - 5, cy - mh - 5, cx + mw + 5, cy + mh + 5], outline=(140, 65, 55, 255), width=7)
-
-    # Lip shading (top)
-    draw.arc([cx - mw - 3, cy - mh - 8, cx + mw + 3, cy + 8], start=180, end=360, fill=(160, 75, 65, 255), width=8)
-
-    # Lip shading (bottom)
-    draw.arc([cx - mw - 3, cy - 5, cx + mw + 3, cy + mh + 5], start=0, end=180, fill=(155, 72, 62, 230), width=7)
-
-    # Lip highlight
-    draw.arc([cx - 30, cy - mh - 5, cx + 30, cy - 5], start=180, end=360, fill=(190, 100, 85, 140), width=4)
-
+    img = img.resize(size, Image.Resampling.LANCZOS)
     if output_path:
         img.save(output_path)
-
     return img
 
 
@@ -272,7 +351,7 @@ def generate_mouth_o(
     output_path: Path | None = None,
 ) -> Image.Image:
     """
-    Generate 'O' mouth - round open for "oh" sound.
+    Generate 'O' mouth - round open (flat design).
 
     Args:
         size: Image dimensions
@@ -281,39 +360,31 @@ def generate_mouth_o(
     Returns:
         PIL Image of O mouth
     """
-    img = Image.new("RGBA", size, (0, 0, 0, 0))
+    scale = 2
+    img = Image.new("RGBA", (size[0] * scale, size[1] * scale), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
-    cx, cy = size[0] // 2, size[1] // 2
-    r = 25  # Round shape
+    cx, cy = (size[0] * scale) // 2, (size[1] * scale) // 2
 
-    # Mouth cavity shadow
-    draw.ellipse([cx - r + 2, cy - r + 2, cx + r + 2, cy + r + 2], fill=(25, 10, 10, 150))
+    # Colors
+    mouth_inside = (40, 20, 20)
+    lip_color = (160, 80, 70)
+    lip_dark = (130, 60, 50)
 
-    # Mouth cavity
-    draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(35, 15, 15, 255))
+    r = 50
 
-    # Tongue/throat hint
-    draw.ellipse([cx - 12, cy + 8, cx + 12, cy + 22], fill=(160, 70, 70, 150))
+    # Mouth cavity (perfect circle)
+    draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=mouth_inside)
 
-    # Upper teeth (slight visibility)
-    draw.arc([cx - 22, cy - 24, cx + 22, cy - 5], start=180, end=360, fill=(240, 240, 230, 180), width=6)
+    # Lips outline (circular)
+    draw.ellipse([cx - r - 6, cy - r - 6, cx + r + 6, cy + r + 6], 
+                 outline=lip_dark, width=14)
+    draw.ellipse([cx - r - 2, cy - r - 2, cx + r + 2, cy + r + 2], 
+                 outline=lip_color, width=8)
 
-    # Outer lips (perfect circle)
-    draw.ellipse([cx - r - 6, cy - r - 6, cx + r + 6, cy + r + 6], outline=(140, 65, 55, 255), width=7)
-
-    # Lip shading (top)
-    draw.arc([cx - r - 3, cy - r - 8, cx + r + 3, cy + r - 8], start=180, end=360, fill=(160, 75, 65, 255), width=8)
-
-    # Lip shading (bottom)
-    draw.arc([cx - r - 3, cy - r + 8, cx + r + 3, cy + r + 8], start=0, end=180, fill=(155, 72, 62, 230), width=7)
-
-    # Lip highlight (glossy effect)
-    draw.arc([cx - 20, cy - r - 5, cx + 20, cy - 5], start=180, end=360, fill=(190, 100, 85, 140), width=4)
-
+    img = img.resize(size, Image.Resampling.LANCZOS)
     if output_path:
         img.save(output_path)
-
     return img
 
 
@@ -322,7 +393,7 @@ def generate_mouth_e(
     output_path: Path | None = None,
 ) -> Image.Image:
     """
-    Generate 'E' mouth - wide smile for "eh" sound.
+    Generate 'E' mouth - wide smile (flat design).
 
     Args:
         size: Image dimensions
@@ -331,57 +402,47 @@ def generate_mouth_e(
     Returns:
         PIL Image of E mouth
     """
-    img = Image.new("RGBA", size, (0, 0, 0, 0))
+    scale = 2
+    img = Image.new("RGBA", (size[0] * scale, size[1] * scale), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
-    cx, cy = size[0] // 2, size[1] // 2
+    cx, cy = (size[0] * scale) // 2, (size[1] * scale) // 2
 
-    # Wide horizontal smile
-    mw, mh = 58, 20
+    # Colors
+    mouth_inside = (40, 20, 20)
+    lip_color = (160, 80, 70)
+    lip_dark = (130, 60, 50)
+    teeth = (255, 255, 245)
 
-    # Mouth cavity shadow
-    draw.ellipse([cx - mw + 2, cy - mh + 2, cx + mw + 2, cy + mh + 2], fill=(25, 10, 10, 150))
+    mw, mh = 115, 35
 
-    # Mouth cavity
-    draw.ellipse([cx - mw, cy - mh, cx + mw, cy + mh], fill=(35, 15, 15, 255))
+    # Mouth cavity (wide horizontal)
+    draw.ellipse([cx - mw, cy - mh, cx + mw, cy + mh], fill=mouth_inside)
 
-    # Upper teeth (prominent)
-    draw.rounded_rectangle([cx - 52, cy - 16, cx + 52, cy + 4], radius=4, fill=(248, 248, 238, 255), outline=(230, 230, 220, 255), width=2)
+    # Teeth (visible top)
+    draw.rounded_rectangle([cx - 100, cy - 28, cx + 100, cy + 5], 
+                          radius=8, fill=teeth)
+    
+    # Tooth separations (subtle)
+    for i in range(-3, 4):
+        tx = cx + i * 28
+        draw.line([(tx, cy - 28), (tx, cy + 5)], fill=(245, 245, 235), width=3)
 
-    # Individual teeth
-    for i in range(-4, 5):
-        tx = cx + i * 12
-        draw.line([(tx, cy - 16), (tx, cy + 4)], fill=(235, 235, 225, 255), width=2)
-        # Tooth shine
-        draw.rectangle([tx - 4, cy - 15, tx - 1, cy - 8], fill=(255, 255, 250, 120))
+    # Lips outline
+    draw.ellipse([cx - mw - 6, cy - mh - 6, cx + mw + 6, cy + mh + 6], 
+                 outline=lip_dark, width=12)
+    draw.ellipse([cx - mw - 2, cy - mh - 2, cx + mw + 2, cy + mh + 2], 
+                 outline=lip_color, width=7)
 
-    # Lower teeth hint
-    draw.ellipse([cx - 48, cy + 5, cx + 48, cy + 17], fill=(243, 243, 233, 255), outline=(225, 225, 215, 255), width=1)
-
-    # Tongue hint
-    draw.ellipse([cx - 40, cy + 8, cx + 40, cy + 16], fill=(180, 80, 80, 100))
-
-    # Outer lips (smiling shape)
-    draw.ellipse([cx - mw - 5, cy - mh - 5, cx + mw + 5, cy + mh + 5], outline=(140, 65, 55, 255), width=6)
-
-    # Upper lip (smile curve)
-    draw.arc([cx - mw - 3, cy - mh - 8, cx + mw + 3, cy + 8], start=180, end=360, fill=(160, 75, 65, 255), width=7)
-
-    # Lower lip
-    draw.arc([cx - mw + 5, cy - 5, cx + mw - 5, cy + mh + 5], start=0, end=180, fill=(155, 70, 60, 240), width=6)
-
-    # Lip shine (upper)
-    draw.arc([cx - 45, cy - mh - 5, cx + 45, cy - 5], start=180, end=360, fill=(190, 100, 85, 130), width=3)
-
+    img = img.resize(size, Image.Resampling.LANCZOS)
     if output_path:
         img.save(output_path)
-
     return img
 
 
 def generate_all_assets(force: bool = False) -> None:
     """
-    Generate all placeholder assets.
+    Generate all high-quality flat-design assets.
 
     Creates base character and all mouth shapes in the assets directory.
 
@@ -404,7 +465,7 @@ def generate_all_assets(force: bool = False) -> None:
         output_path = assets_dir / filename
 
         if force or not output_path.exists():
-            print(f"Generating asset: {filename}")
+            print(f"Generating high-quality asset: {filename}")
             generator_func(size=size, output_path=output_path)
         else:
             print(f"Asset already exists: {filename}")
@@ -443,4 +504,4 @@ if __name__ == "__main__":
 
     force = "--force" in sys.argv
     generate_all_assets(force=force)
-    print("Asset generation complete!")
+    print("High-quality asset generation complete!")
