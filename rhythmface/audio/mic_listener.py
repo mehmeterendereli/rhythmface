@@ -163,7 +163,8 @@ class MicListener(IAudioSource):
             time_info: Timing information
             status: Stream status
         """
-        if status:
+        # Silently handle stream status (overflow is normal in real-time audio)
+        if status and "overflow" not in str(status).lower():
             print(f"Audio stream status: {status}")
 
         # Copy audio data
@@ -188,17 +189,20 @@ class MicListener(IAudioSource):
         rms_energy = float(np.sqrt(np.mean(audio**2)))
 
         # Compute MFCC using librosa
+        # Use n_fft that matches our chunk size to avoid warnings
+        n_fft = min(2048, len(audio))
         mfccs = librosa.feature.mfcc(
             y=audio,
             sr=self.config.sample_rate,
             n_mfcc=13,
+            n_fft=n_fft,
             hop_length=len(audio),  # Single frame
         )
         mfcc = mfccs[:, 0].astype(np.float32)
 
         # Compute spectral centroid
         centroid = librosa.feature.spectral_centroid(
-            y=audio, sr=self.config.sample_rate, hop_length=len(audio)
+            y=audio, sr=self.config.sample_rate, n_fft=n_fft, hop_length=len(audio)
         )
         spectral_centroid = float(centroid[0, 0]) if centroid.size > 0 else 0.0
 
