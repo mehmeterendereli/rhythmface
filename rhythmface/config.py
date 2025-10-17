@@ -26,7 +26,7 @@ class AudioConfig:
     channels: int = 1
     """Number of audio channels (1 = mono, 2 = stereo)."""
 
-    energy_threshold: float = 0.05
+    energy_threshold: float = 0.015
     """Minimum RMS energy to trigger mouth movement (0.0-1.0)."""
 
     device_id: int | None = None
