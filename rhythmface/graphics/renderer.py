@@ -187,9 +187,9 @@ class Renderer(IRenderer):
         if mouth_shape in self.mouth_images:
             mouth_img = self.mouth_images[mouth_shape]
             
-            # Scale mouth dynamically based on character scale
-            # Base scale: 2.0x, adjusted by character_scale factor
-            mouth_scale = 2.0 * self.character_scale
+            # Scale mouth proportionally - smaller for larger character
+            # Base scale: 1.2x (was 2.0x), adjusted by character_scale factor
+            mouth_scale = 1.2 * self.character_scale
             mouth_scaled = pygame.transform.smoothscale(
                 mouth_img,
                 (int(mouth_img.get_width() * mouth_scale), 
