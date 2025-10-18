@@ -306,25 +306,21 @@ def generate_mouth_closed(
     size: tuple[int, int] = (256, 128),
     output_path: Path | None = None,
 ) -> Image.Image:
-    """Generate closed mouth with subtle natural smile - matching base.png aesthetic."""
+    """Generate closed mouth - minimal clean smile."""
     scale = 6
     img = Image.new("RGBA", (size[0] * scale, size[1] * scale), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
     cx, cy = (size[0] * scale) // 2, (size[1] * scale) // 2
 
-    # Colors matching base.png palette (skin_shadow for hint line)
-    lip_outline = (180, 140, 125)  # Warm tone from skin palette
-    lip_fill = (210, 160, 145)     # Lighter warm tone
-    lip_highlight = (235, 185, 170)  # Brightest highlight
+    lip = (210, 160, 145)
+    lip_outline = (180, 140, 125)
 
-    # Subtle smile curve - matching the hint line in base.png
-    draw.arc([cx - 140, cy - 25, cx + 140, cy + 25],
-             start=0, end=180, fill=lip_outline, width=24)
-    draw.arc([cx - 132, cy - 22, cx + 132, cy + 22],
-             start=0, end=180, fill=lip_fill, width=18)
-    draw.arc([cx - 128, cy - 28, cx + 128, cy - 6],
-             start=0, end=180, fill=lip_highlight, width=8)
+    # Simple smile arc - clean and minimal
+    draw.arc([cx - 130, cy - 20, cx + 130, cy + 20],
+             start=0, end=180, fill=lip_outline, width=18)
+    draw.arc([cx - 122, cy - 16, cx + 122, cy + 16],
+             start=0, end=180, fill=lip, width=12)
 
     img = img.resize(size, Image.Resampling.LANCZOS)
     if output_path:
@@ -336,53 +332,43 @@ def generate_mouth_a(
     size: tuple[int, int] = (256, 128),
     output_path: Path | None = None,
 ) -> Image.Image:
-    """Generate 'A' mouth with visible teeth - matching base.png modern flat-design."""
+    """Generate 'A' mouth - simplified with visible teeth."""
     scale = 6
     img = Image.new("RGBA", (size[0] * scale, size[1] * scale), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
     cx, cy = (size[0] * scale) // 2, (size[1] * scale) // 2
 
-    # Modern palette matching base.png
-    mouth_cavity = (45, 20, 20)    # Dark interior
-    lip_outline = (180, 140, 125)  # Warm outline
-    lip_fill = (210, 160, 145)     # Medium lip
-    lip_highlight = (235, 185, 170)  # Bright highlight
-    teeth = (248, 248, 242)        # Natural white teeth
-    teeth_line = (225, 220, 210)   # Tooth separator
-    tongue = (205, 120, 110)       # Warm red-brown tongue
+    # Simplified palette
+    cavity = (50, 20, 20)
+    lip = (210, 160, 145)
+    lip_outline = (180, 140, 125)
+    teeth = (245, 245, 240)
+    teeth_line = (220, 215, 205)
 
-    mw, mh = 155, 105
+    mw, mh = 145, 95
 
-    # Mouth cavity ellipse
-    draw.ellipse([cx - mw, cy - mh, cx + mw, cy + mh], fill=mouth_cavity)
+    # Mouth cavity
+    draw.ellipse([cx - mw, cy - mh, cx + mw, cy + mh], fill=cavity)
 
-    # Upper teeth - rounded rectangle
-    draw.rounded_rectangle([cx - 130, cy - 90, cx + 130, cy - 20],
-                          radius=9, fill=teeth)
+    # Upper teeth - simple
+    draw.rounded_rectangle([cx - 120, cy - 80, cx + 120, cy - 15],
+                          radius=8, fill=teeth)
     
-    # Individual teeth separators with shine
-    for i in range(-5, 6):
+    # Tooth separators - clean lines only
+    for i in range(-4, 5):
         tooth_x = cx + i * 40
-        # Separator line
-        draw.line([(tooth_x, cy - 90), (tooth_x, cy - 20)], 
-                 fill=teeth_line, width=3)
-        # Tooth shine rectangle
-        draw.rectangle([tooth_x - 15, cy - 87, tooth_x - 8, cy - 68], 
-                      fill=(255, 255, 255, 180))
+        draw.line([(tooth_x, cy - 80), (tooth_x, cy - 15)], 
+                 fill=teeth_line, width=2)
 
-    # Tongue
-    draw.ellipse([cx - 95, cy + 10, cx + 95, cy + 60], fill=tongue)
-    # Tongue centerline
-    draw.line([(cx, cy + 15), (cx, cy + 55)], fill=(185, 105, 95), width=2)
+    # Tongue - minimal
+    draw.ellipse([cx - 85, cy + 5, cx + 85, cy + 50], fill=(200, 110, 100))
 
-    # Lips with gradient effect
-    draw.ellipse([cx - mw - 9, cy - mh - 9, cx + mw + 9, cy + mh + 9],
-                 outline=lip_outline, width=22)
-    draw.ellipse([cx - mw - 3, cy - mh - 3, cx + mw + 3, cy + mh + 3],
-                 outline=lip_fill, width=12)
-    draw.arc([cx - mw, cy - mh - 7, cx + mw, cy - 5],
-             start=180, end=360, fill=lip_highlight, width=8)
+    # Lips - simple outline
+    draw.ellipse([cx - mw - 6, cy - mh - 6, cx + mw + 6, cy + mh + 6],
+                 outline=lip_outline, width=16)
+    draw.ellipse([cx - mw, cy - mh, cx + mw, cy + mh],
+                 outline=lip, width=8)
 
     img = img.resize(size, Image.Resampling.LANCZOS)
     if output_path:
@@ -394,37 +380,33 @@ def generate_mouth_o(
     size: tuple[int, int] = (256, 128),
     output_path: Path | None = None,
 ) -> Image.Image:
-    """Generate 'O' mouth with rounded shape - matching base.png modern aesthetic."""
+    """Generate 'O' mouth - simplified circle."""
     scale = 6
     img = Image.new("RGBA", (size[0] * scale, size[1] * scale), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
     cx, cy = (size[0] * scale) // 2, (size[1] * scale) // 2
 
-    # Modern palette
-    mouth_cavity = (45, 20, 20)
+    cavity = (50, 20, 20)
+    lip = (210, 160, 145)
     lip_outline = (180, 140, 125)
-    lip_fill = (210, 160, 145)
-    lip_highlight = (235, 185, 170)
-    teeth = (248, 248, 242)
+    teeth = (245, 245, 240)
 
-    radius = 95
+    radius = 85
 
-    # Mouth cavity - perfect circle
+    # Mouth cavity
     draw.ellipse([cx - radius, cy - radius, cx + radius, cy + radius], 
-                 fill=mouth_cavity)
+                 fill=cavity)
 
-    # Upper teeth arc
-    draw.arc([cx - 72, cy - 82, cx + 72, cy - 22],
-             start=180, end=360, fill=teeth, width=24)
+    # Upper teeth - simple arc
+    draw.arc([cx - 65, cy - 75, cx + 65, cy - 15],
+             start=180, end=360, fill=teeth, width=20)
 
-    # Lips with depth
-    draw.ellipse([cx - radius - 9, cy - radius - 9, cx + radius + 9, cy + radius + 9],
-                 outline=lip_outline, width=22)
-    draw.ellipse([cx - radius - 3, cy - radius - 3, cx + radius + 3, cy + radius + 3],
-                 outline=lip_fill, width=12)
-    draw.arc([cx - radius - 7, cy - radius - 10, cx + radius + 7, cy - 3],
-             start=180, end=360, fill=lip_highlight, width=8)
+    # Lips - minimal
+    draw.ellipse([cx - radius - 6, cy - radius - 6, cx + radius + 6, cy + radius + 6],
+                 outline=lip_outline, width=16)
+    draw.ellipse([cx - radius, cy - radius, cx + radius, cy + radius],
+                 outline=lip, width=8)
 
     img = img.resize(size, Image.Resampling.LANCZOS)
     if output_path:
@@ -436,52 +418,43 @@ def generate_mouth_e(
     size: tuple[int, int] = (256, 128),
     output_path: Path | None = None,
 ) -> Image.Image:
-    """Generate 'E' mouth with wide smile and full teeth - matching base.png professional style."""
+    """Generate 'E' mouth - simplified wide smile."""
     scale = 6
     img = Image.new("RGBA", (size[0] * scale, size[1] * scale), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
     cx, cy = (size[0] * scale) // 2, (size[1] * scale) // 2
 
-    # Modern palette matching base.png
-    mouth_cavity = (45, 20, 20)
+    cavity = (50, 20, 20)
+    lip = (210, 160, 145)
     lip_outline = (180, 140, 125)
-    lip_fill = (210, 160, 145)
-    lip_highlight = (235, 185, 170)
-    teeth = (248, 248, 242)
-    teeth_line = (225, 220, 210)
-    teeth_lower = (242, 240, 235)
+    teeth = (245, 245, 240)
+    teeth_line = (220, 215, 205)
 
-    mw, mh = 240, 70
+    mw, mh = 220, 65
 
     # Mouth cavity
-    draw.ellipse([cx - mw, cy - mh, cx + mw, cy + mh], fill=mouth_cavity)
+    draw.ellipse([cx - mw, cy - mh, cx + mw, cy + mh], fill=cavity)
 
-    # Upper teeth - large smile
-    draw.rounded_rectangle([cx - 205, cy - 55, cx + 205, cy + 4],
-                          radius=9, fill=teeth)
+    # Upper teeth - wide smile
+    draw.rounded_rectangle([cx - 190, cy - 50, cx + 190, cy + 0],
+                          radius=8, fill=teeth)
     
-    # Individual teeth with shine
-    for i in range(-8, 9):
-        tooth_x = cx + i * 47
-        if -8 <= i <= 8:
-            # Separator line
-            draw.line([(tooth_x, cy - 55), (tooth_x, cy + 4)], 
-                     fill=teeth_line, width=3)
-            # Tooth shine
-            draw.rectangle([tooth_x - 17, cy - 53, tooth_x - 9, cy - 35], 
-                          fill=(255, 255, 255, 200))
+    # Tooth separators - clean only
+    for i in range(-7, 8):
+        tooth_x = cx + i * 43
+        if -7 <= i <= 7:
+            draw.line([(tooth_x, cy - 50), (tooth_x, cy + 0)], 
+                     fill=teeth_line, width=2)
 
-    # Lower teeth
-    draw.ellipse([cx - 185, cy + 8, cx + 185, cy + 45], fill=teeth_lower)
+    # Lower teeth - simple
+    draw.ellipse([cx - 170, cy + 5, cx + 170, cy + 40], fill=teeth)
 
-    # Modern lips with gradient
-    draw.ellipse([cx - mw - 9, cy - mh - 9, cx + mw + 9, cy + mh + 9],
-                 outline=lip_outline, width=20)
-    draw.ellipse([cx - mw - 3, cy - mh - 3, cx + mw + 3, cy + mh + 3],
-                 outline=lip_fill, width=11)
-    draw.arc([cx - mw + 10, cy - mh - 7, cx + mw - 10, cy - 2],
-             start=180, end=360, fill=lip_highlight, width=7)
+    # Lips - simple outline
+    draw.ellipse([cx - mw - 6, cy - mh - 6, cx + mw + 6, cy + mh + 6],
+                 outline=lip_outline, width=14)
+    draw.ellipse([cx - mw, cy - mh, cx + mw, cy + mh],
+                 outline=lip, width=8)
 
     img = img.resize(size, Image.Resampling.LANCZOS)
     if output_path:
