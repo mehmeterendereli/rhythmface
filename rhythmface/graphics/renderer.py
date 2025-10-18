@@ -106,8 +106,8 @@ class Renderer(IRenderer):
         """
         pygame.init()
 
-        # Create display window
-        flags = 0
+        # Create display window - borderless with transparency for OBS streaming
+        flags = pygame.NOFRAME  # Borderless window
         if self.config.fullscreen:
             flags = pygame.FULLSCREEN
         self.window = pygame.display.set_mode(
@@ -175,8 +175,8 @@ class Renderer(IRenderer):
         if not self.initialized or self.window is None:
             return
 
-        # Clear screen with background color
-        self.window.fill(self.config.background_color)
+        # Clear screen with TRANSPARENT background for OBS streaming
+        self.window.fill((0, 0, 0, 0))  # Fully transparent RGBA
 
         # Draw base character image (centered)
         if self.base_image:
