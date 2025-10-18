@@ -176,7 +176,7 @@ class Renderer(IRenderer):
             )
             mouth_rect = mouth_scaled.get_rect(center=(
                 self.window.get_rect().centerx,
-                self.window.get_rect().centery + 140  # Positioned lower for 1024x1024
+                self.window.get_rect().centery + 110  # Higher position (was 140)
             ))
             self.window.blit(mouth_scaled, mouth_rect)
 

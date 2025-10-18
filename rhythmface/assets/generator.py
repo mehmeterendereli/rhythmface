@@ -306,7 +306,7 @@ def generate_mouth_closed(
     size: tuple[int, int] = (256, 128),
     output_path: Path | None = None,
 ) -> Image.Image:
-    """Generate closed mouth - minimal clean smile."""
+    """Generate closed mouth - simple smile line."""
     scale = 6
     img = Image.new("RGBA", (size[0] * scale, size[1] * scale), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
@@ -316,11 +316,9 @@ def generate_mouth_closed(
     lip = (210, 160, 145)
     lip_outline = (180, 140, 125)
 
-    # Simple smile arc - clean and minimal
+    # Simple smile arc - clean line
     draw.arc([cx - 130, cy - 20, cx + 130, cy + 20],
-             start=0, end=180, fill=lip_outline, width=18)
-    draw.arc([cx - 122, cy - 16, cx + 122, cy + 16],
-             start=0, end=180, fill=lip, width=12)
+             start=0, end=180, fill=lip_outline, width=16)
 
     img = img.resize(size, Image.Resampling.LANCZOS)
     if output_path:
@@ -332,39 +330,27 @@ def generate_mouth_a(
     size: tuple[int, int] = (256, 128),
     output_path: Path | None = None,
 ) -> Image.Image:
-    """Generate 'A' mouth - simplified with visible teeth."""
+    """Generate 'A' mouth - open with tongue, NO TEETH."""
     scale = 6
     img = Image.new("RGBA", (size[0] * scale, size[1] * scale), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
     cx, cy = (size[0] * scale) // 2, (size[1] * scale) // 2
 
-    # Simplified palette
     cavity = (50, 20, 20)
     lip = (210, 160, 145)
     lip_outline = (180, 140, 125)
-    teeth = (245, 245, 240)
-    teeth_line = (220, 215, 205)
+    tongue = (200, 110, 100)
 
     mw, mh = 145, 95
 
-    # Mouth cavity
+    # Mouth cavity - empty dark
     draw.ellipse([cx - mw, cy - mh, cx + mw, cy + mh], fill=cavity)
 
-    # Upper teeth - simple
-    draw.rounded_rectangle([cx - 120, cy - 80, cx + 120, cy - 15],
-                          radius=8, fill=teeth)
-    
-    # Tooth separators - clean lines only
-    for i in range(-4, 5):
-        tooth_x = cx + i * 40
-        draw.line([(tooth_x, cy - 80), (tooth_x, cy - 15)], 
-                 fill=teeth_line, width=2)
+    # Tongue - visible in center
+    draw.ellipse([cx - 100, cy, cx + 100, cy + 60], fill=tongue)
 
-    # Tongue - minimal
-    draw.ellipse([cx - 85, cy + 5, cx + 85, cy + 50], fill=(200, 110, 100))
-
-    # Lips - simple outline
+    # Lips - simple outline only
     draw.ellipse([cx - mw - 6, cy - mh - 6, cx + mw + 6, cy + mh + 6],
                  outline=lip_outline, width=16)
     draw.ellipse([cx - mw, cy - mh, cx + mw, cy + mh],
@@ -380,7 +366,7 @@ def generate_mouth_o(
     size: tuple[int, int] = (256, 128),
     output_path: Path | None = None,
 ) -> Image.Image:
-    """Generate 'O' mouth - simplified circle."""
+    """Generate 'O' mouth - perfect circle, NO TEETH."""
     scale = 6
     img = Image.new("RGBA", (size[0] * scale, size[1] * scale), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
@@ -390,19 +376,14 @@ def generate_mouth_o(
     cavity = (50, 20, 20)
     lip = (210, 160, 145)
     lip_outline = (180, 140, 125)
-    teeth = (245, 245, 240)
 
     radius = 85
 
-    # Mouth cavity
+    # Mouth cavity - empty dark circle
     draw.ellipse([cx - radius, cy - radius, cx + radius, cy + radius], 
                  fill=cavity)
 
-    # Upper teeth - simple arc
-    draw.arc([cx - 65, cy - 75, cx + 65, cy - 15],
-             start=180, end=360, fill=teeth, width=20)
-
-    # Lips - minimal
+    # Lips - simple outline
     draw.ellipse([cx - radius - 6, cy - radius - 6, cx + radius + 6, cy + radius + 6],
                  outline=lip_outline, width=16)
     draw.ellipse([cx - radius, cy - radius, cx + radius, cy + radius],
@@ -418,7 +399,7 @@ def generate_mouth_e(
     size: tuple[int, int] = (256, 128),
     output_path: Path | None = None,
 ) -> Image.Image:
-    """Generate 'E' mouth - simplified wide smile."""
+    """Generate 'E' mouth - wide smile, NO TEETH."""
     scale = 6
     img = Image.new("RGBA", (size[0] * scale, size[1] * scale), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
@@ -428,27 +409,11 @@ def generate_mouth_e(
     cavity = (50, 20, 20)
     lip = (210, 160, 145)
     lip_outline = (180, 140, 125)
-    teeth = (245, 245, 240)
-    teeth_line = (220, 215, 205)
 
     mw, mh = 220, 65
 
-    # Mouth cavity
+    # Mouth cavity - empty dark ellipse
     draw.ellipse([cx - mw, cy - mh, cx + mw, cy + mh], fill=cavity)
-
-    # Upper teeth - wide smile
-    draw.rounded_rectangle([cx - 190, cy - 50, cx + 190, cy + 0],
-                          radius=8, fill=teeth)
-    
-    # Tooth separators - clean only
-    for i in range(-7, 8):
-        tooth_x = cx + i * 43
-        if -7 <= i <= 7:
-            draw.line([(tooth_x, cy - 50), (tooth_x, cy + 0)], 
-                     fill=teeth_line, width=2)
-
-    # Lower teeth - simple
-    draw.ellipse([cx - 170, cy + 5, cx + 170, cy + 40], fill=teeth)
 
     # Lips - simple outline
     draw.ellipse([cx - mw - 6, cy - mh - 6, cx + mw + 6, cy + mh + 6],
