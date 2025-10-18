@@ -196,9 +196,9 @@ class Renderer(IRenderer):
                  int(mouth_img.get_height() * mouth_scale))
             )
             
-            # Position mouth dynamically based on window and character size
-            # Y offset scales with character size
-            mouth_y_offset = int(75 * self.character_scale)
+            # Position mouth dynamically - HIGHER on character
+            # Y offset scales with character size (was 75, now 40)
+            mouth_y_offset = int(40 * self.character_scale)
             mouth_rect = mouth_scaled.get_rect(center=(
                 self.window.get_rect().centerx,
                 self.window.get_rect().centery + mouth_y_offset
