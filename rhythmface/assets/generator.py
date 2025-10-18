@@ -313,8 +313,9 @@ def generate_mouth_closed(
 
     cx, cy = (size[0] * scale) // 2, (size[1] * scale) // 2
 
-    lip = (210, 160, 145)
-    lip_outline = (180, 140, 125)
+    # Colors harmonized with base.png palette
+    lip_outline = (200, 160, 130)  # Matches base.png skin_shadow - warm brown
+    lip_highlight = (220, 180, 150)  # Lighter warm tone
 
     # Simple smile arc - clean line
     draw.arc([cx - 130, cy - 20, cx + 130, cy + 20],
@@ -337,24 +338,25 @@ def generate_mouth_a(
 
     cx, cy = (size[0] * scale) // 2, (size[1] * scale) // 2
 
-    cavity = (50, 20, 20)
-    lip = (210, 160, 145)
-    lip_outline = (180, 140, 125)
-    tongue = (200, 110, 100)
+    # Colors harmonized with base.png - warm palette
+    cavity = (60, 25, 20)  # Warm dark brown (not too red)
+    lip_outline = (200, 160, 130)  # Matches base.png skin_shadow
+    lip_highlight = (220, 180, 150)  # Lighter lip
+    tongue = (195, 120, 105)  # Warm muted pink (harmonizes with skin)
 
     mw, mh = 145, 95
 
-    # Mouth cavity - empty dark
+    # Mouth cavity - warm brown, not bright red
     draw.ellipse([cx - mw, cy - mh, cx + mw, cy + mh], fill=cavity)
 
-    # Tongue - visible in center
+    # Tongue - visible in center, muted warm tone
     draw.ellipse([cx - 100, cy, cx + 100, cy + 60], fill=tongue)
 
-    # Lips - simple outline only
+    # Lips - simple outline
     draw.ellipse([cx - mw - 6, cy - mh - 6, cx + mw + 6, cy + mh + 6],
                  outline=lip_outline, width=16)
     draw.ellipse([cx - mw, cy - mh, cx + mw, cy + mh],
-                 outline=lip, width=8)
+                 outline=lip_highlight, width=8)
 
     img = img.resize(size, Image.Resampling.LANCZOS)
     if output_path:
@@ -373,13 +375,14 @@ def generate_mouth_o(
 
     cx, cy = (size[0] * scale) // 2, (size[1] * scale) // 2
 
-    cavity = (50, 20, 20)
-    lip = (210, 160, 145)
-    lip_outline = (180, 140, 125)
+    # Colors harmonized with base.png
+    cavity = (60, 25, 20)  # Warm dark brown
+    lip_outline = (200, 160, 130)  # Matches base.png skin_shadow
+    lip_highlight = (220, 180, 150)  # Lighter lip
 
     radius = 85
 
-    # Mouth cavity - empty dark circle
+    # Mouth cavity - empty dark circle, warm brown
     draw.ellipse([cx - radius, cy - radius, cx + radius, cy + radius], 
                  fill=cavity)
 
@@ -387,7 +390,7 @@ def generate_mouth_o(
     draw.ellipse([cx - radius - 6, cy - radius - 6, cx + radius + 6, cy + radius + 6],
                  outline=lip_outline, width=16)
     draw.ellipse([cx - radius, cy - radius, cx + radius, cy + radius],
-                 outline=lip, width=8)
+                 outline=lip_highlight, width=8)
 
     img = img.resize(size, Image.Resampling.LANCZOS)
     if output_path:
@@ -406,20 +409,21 @@ def generate_mouth_e(
 
     cx, cy = (size[0] * scale) // 2, (size[1] * scale) // 2
 
-    cavity = (50, 20, 20)
-    lip = (210, 160, 145)
-    lip_outline = (180, 140, 125)
+    # Colors harmonized with base.png
+    cavity = (60, 25, 20)  # Warm dark brown
+    lip_outline = (200, 160, 130)  # Matches base.png skin_shadow
+    lip_highlight = (220, 180, 150)  # Lighter lip
 
     mw, mh = 220, 65
 
-    # Mouth cavity - empty dark ellipse
+    # Mouth cavity - empty dark ellipse, warm brown
     draw.ellipse([cx - mw, cy - mh, cx + mw, cy + mh], fill=cavity)
 
     # Lips - simple outline
     draw.ellipse([cx - mw - 6, cy - mh - 6, cx + mw + 6, cy + mh + 6],
                  outline=lip_outline, width=14)
     draw.ellipse([cx - mw, cy - mh, cx + mw, cy + mh],
-                 outline=lip, width=8)
+                 outline=lip_highlight, width=8)
 
     img = img.resize(size, Image.Resampling.LANCZOS)
     if output_path:
