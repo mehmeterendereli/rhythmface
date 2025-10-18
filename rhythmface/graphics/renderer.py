@@ -106,8 +106,8 @@ class Renderer(IRenderer):
         """
         pygame.init()
 
-        # Create display window - borderless with transparency for OBS streaming
-        flags = pygame.NOFRAME  # Borderless window
+        # Create display window - borderless with ALPHA transparency for OBS streaming
+        flags = pygame.NOFRAME | pygame.SRCALPHA  # Borderless + Alpha transparency
         if self.config.fullscreen:
             flags = pygame.FULLSCREEN
         self.window = pygame.display.set_mode(
