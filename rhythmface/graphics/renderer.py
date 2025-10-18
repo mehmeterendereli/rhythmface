@@ -94,6 +94,7 @@ class Renderer(IRenderer):
 
         # State
         self.initialized = False
+        self.character_scale = 1.0  # Dynamic scale factor for character sizing
 
     def initialize(self) -> None:
         """
@@ -126,24 +127,40 @@ class Renderer(IRenderer):
         self.initialized = True
 
     def _load_assets(self) -> None:
-        """
-        Load character and mouth images from assets directory.
+        """Load PNG assets from disk."""
+        assets_dir = Path(__file__).parent.parent / "assets"
 
-        Raises:
-            FileNotFoundError: If asset files are missing
-        """
-        # Load base character image
-        base_path = self.assets_dir / "base.png"
-        if not base_path.exists():
-            raise FileNotFoundError(f"Base image not found: {base_path}")
-        self.base_image = pygame.image.load(str(base_path)).convert_alpha()
+        # Load base character
+        base_path = assets_dir / "base.png"
+        if base_path.exists():
+            self.base_image = pygame.image.load(base_path).convert_alpha()
+            
+            # SCALE character to fit window dynamically (80% of window)
+            # Window is 640x640, so character will be ~512x512
+            target_size = int(self.config.window_width * 0.8)
+            self.base_image = pygame.transform.smoothscale(
+                self.base_image,
+                (target_size, target_size)
+            )
+            self.character_scale = target_size / 512.0  # Scale factor for mouth positioning
+        else:
+            print(f"Warning: base.png not found at {base_path}")
 
-        # Load mouth shape images
-        for shape in MouthShape:
-            mouth_path = self.assets_dir / f"mouth_{shape.value}.png"
-            if not mouth_path.exists():
-                raise FileNotFoundError(f"Mouth image not found: {mouth_path}")
-            self.mouth_images[shape] = pygame.image.load(str(mouth_path)).convert_alpha()
+        # Load mouth shapes (these stay standard size, will be scaled relative to character)
+        mouth_files = {
+            MouthShape.CLOSED: "mouth_closed.png",
+            MouthShape.A: "mouth_A.png",
+            MouthShape.O: "mouth_O.png",  # noqa: E741
+            MouthShape.E: "mouth_E.png",
+        }
+
+        for shape, filename in mouth_files.items():
+            mouth_path = assets_dir / filename
+            if mouth_path.exists():
+                mouth_img = pygame.image.load(mouth_path).convert_alpha()
+                self.mouth_images[shape] = mouth_img
+            else:
+                print(f"Warning: {filename} not found at {mouth_path}")
 
     def render_frame(self, mouth_shape: MouthShape) -> None:
         """
@@ -169,14 +186,22 @@ class Renderer(IRenderer):
         # Draw mouth shape overlay (positioned on character's face)
         if mouth_shape in self.mouth_images:
             mouth_img = self.mouth_images[mouth_shape]
-            # Scale mouth smaller (2.0x) - keeps window 640x640 but smaller mouths
+            
+            # Scale mouth dynamically based on character scale
+            # Base scale: 2.0x, adjusted by character_scale factor
+            mouth_scale = 2.0 * self.character_scale
             mouth_scaled = pygame.transform.smoothscale(
                 mouth_img,
-                (int(mouth_img.get_width() * 2.0), int(mouth_img.get_height() * 2.0))
+                (int(mouth_img.get_width() * mouth_scale), 
+                 int(mouth_img.get_height() * mouth_scale))
             )
+            
+            # Position mouth dynamically based on window and character size
+            # Y offset scales with character size
+            mouth_y_offset = int(75 * self.character_scale)
             mouth_rect = mouth_scaled.get_rect(center=(
                 self.window.get_rect().centerx,
-                self.window.get_rect().centery + 75  # Higher position (was 110)
+                self.window.get_rect().centery + mouth_y_offset
             ))
             self.window.blit(mouth_scaled, mouth_rect)
 
