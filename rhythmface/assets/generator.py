@@ -494,8 +494,8 @@ def generate_all_assets(force: bool = False) -> None:
     assets_dir = get_assets_dir()
     assets_dir.mkdir(exist_ok=True)
 
-    assets = [
-        ("base.png", generate_base_character, (512, 512)),
+    # IMPORTANT: base.png is LOCKED - never regenerate!
+    mouth_assets = [
         ("mouth_closed.png", generate_mouth_closed, (256, 128)),
         ("mouth_A.png", generate_mouth_a, (256, 128)),
         ("mouth_O.png", generate_mouth_o, (256, 128)),
@@ -503,7 +503,9 @@ def generate_all_assets(force: bool = False) -> None:
     ]
 
     print("=== Modern Asset Generation (6x Supersampling) ===")
-    for filename, generator_func, size in assets:
+    print("  [PROTECTED] base.png - LOCKED (never regenerate)")
+    
+    for filename, generator_func, size in mouth_assets:
         output_path = assets_dir / filename
 
         if force or not output_path.exists():
