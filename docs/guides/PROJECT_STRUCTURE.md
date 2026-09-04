@@ -280,8 +280,8 @@ Planned additions (see CONTRIBUTING.md for details):
 ---
 
 For more details, see:
-- [README.md](README.md): Project overview
+- [README.md](../../README.md): Project overview
 - [CONTRIBUTING.md](CONTRIBUTING.md): Contribution guide
 - [QUICKSTART.md](QUICKSTART.md): Quick start guide
-- [docs/](docs/): Full documentation
+- [docs/](../): Historical documentation
 

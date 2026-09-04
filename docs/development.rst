@@ -19,7 +19,7 @@ Initial Setup
 .. code-block:: bash
 
    # Clone repository
-   git clone https://github.com/yourusername/rhythmface.git
+   git clone https://github.com/mehmeterendereli/rhythmface.git
    cd rhythmface
 
    # Install dependencies
