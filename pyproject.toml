@@ -1,13 +1,12 @@
 [tool.poetry]
 name = "rhythmface"
 version = "0.1.0"
-description = "Real-time lip-sync animation for a 2D 'rapper vibe' character driven by microphone audio"
+description = "Archived 2D lip-sync prototype driven by microphone audio features"
 authors = ["RhythmFace Contributors"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/yourusername/rhythmface"
-repository = "https://github.com/yourusername/rhythmface"
-documentation = "https://rhythmface.readthedocs.io"
+homepage = "https://github.com/mehmeterendereli/rhythmface"
+repository = "https://github.com/mehmeterendereli/rhythmface"
 keywords = ["audio", "lip-sync", "animation", "real-time", "pygame"]
 classifiers = [
     "Development Status :: 3 - Alpha",

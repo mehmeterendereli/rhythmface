@@ -50,13 +50,13 @@ Examples of behavior that contributes to a positive environment:
 
 2. **Clone your fork**:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/rhythmface.git
+   git clone https://github.com/mehmeterendereli/rhythmface.git
    cd rhythmface
    ```
 
 3. **Add upstream remote**:
    ```bash
-   git remote add upstream https://github.com/yourusername/rhythmface.git
+   git remote add upstream https://github.com/mehmeterendereli/rhythmface.git
    ```
 
 4. **Install dependencies**:
@@ -378,9 +378,7 @@ We especially welcome contributions in:
 
 ## 💡 Getting Help
 
-- **Documentation**: Check [docs](https://rhythmface.readthedocs.io)
-- **Discussions**: Use [GitHub Discussions](https://github.com/yourusername/rhythmface/discussions)
-- **Issues**: Search existing issues first
+- **Documentation**: Read the files under `docs/` in this archived repository.
 - **Discord**: Join our community server (if applicable)
 
 ## 🏆 Recognition

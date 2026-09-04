@@ -9,6 +9,5 @@ Quick Links
 -----------
 
 * :doc:`development`: Development setup and workflows
-* `GitHub Repository <https://github.com/yourusername/rhythmface>`_
-* `Issue Tracker <https://github.com/yourusername/rhythmface/issues>`_
+* `GitHub Repository <https://github.com/mehmeterendereli/rhythmface>`_
 

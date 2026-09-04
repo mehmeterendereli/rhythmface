@@ -28,7 +28,7 @@ Before installing RhythmFace, ensure you have:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/rhythmface.git
+git clone https://github.com/mehmeterendereli/rhythmface.git
 cd rhythmface
 ```
 
@@ -286,16 +286,16 @@ docker run --device /dev/snd rhythmface
 ## Next Steps
 
 - Read [QUICKSTART.md](QUICKSTART.md) for usage guide
-- Check [README.md](README.md) for features
+- Check [README.md](../../README.md) for archive status
 - See [CONTRIBUTING.md](CONTRIBUTING.md) to contribute
-- Browse [docs/](docs/) for full documentation
+- Browse [docs/](../) for historical documentation
 
 ## Getting Help
 
 If you encounter issues:
 
-1. Check [GitHub Issues](https://github.com/yourusername/rhythmface/issues)
-2. Search existing solutions
+1. Review the archived repository history and existing documentation.
+2. Reproduce the issue in an isolated environment.
 3. Create a new issue with:
    - Your OS and Python version
    - Error messages

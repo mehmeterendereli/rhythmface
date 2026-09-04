@@ -15,7 +15,7 @@ Make sure you have:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/rhythmface.git
+git clone https://github.com/mehmeterendereli/rhythmface.git
 cd rhythmface
 
 # Install dependencies
@@ -105,8 +105,8 @@ poetry install
 
 ## Next Steps
 
-- Read the [full documentation](https://rhythmface.readthedocs.io)
-- Explore [example configurations](example_config.yaml)
+- Read the local documentation under `docs/`.
+- Explore [example configurations](../../example_config.yaml)
 - Check out [contributing guidelines](CONTRIBUTING.md) to add features
 - Join the community on GitHub Discussions
 
